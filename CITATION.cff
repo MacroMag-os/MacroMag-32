@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software or architecture, please cite it as below."
+title: "MacroMag: Modular Offline Computing Architecture"
+authors:
+  - family-names: "Morawski"
+    given-names: "Adrian"
+    affiliation: "MacroMag Foundation"
+date-released: 2026-01-01
+url: "https://github.com/maldyrek/MacroMag-32"
