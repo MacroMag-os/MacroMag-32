@@ -7,7 +7,7 @@
 
 Modern computing is trapped in a cycle of planned obsolescence. Mainstream operating systems and locked-down hardware (*eFUSEs*, remote kill-switches, mandatory cloud telemetry) actively turn perfectly functional electronics into e-waste.
 
-**MacroMag is an experimental hardware-software architecture designed for digital sovereignty, modularity, and zero-telemetry offline execution.**
+**MacroMag is an experimental hardware-software architecture designed for digital sovereignty, modularity, and zero-telemetry online execution.**
 
 Instead of patching forty-year-old legacy standards, we are building a clean, minimalist ecosystem focused on object-oriented command execution, hardware-level sandboxing, and modular hardware design.
 
@@ -65,6 +65,9 @@ We are currently in the **Proof-of-Concept (PoC)** phase. Honest engineering com
 ## 🤝 How to Contribute
 
 MacroMag is an ambitious, founder-led open-source project initiated by Adrian Morawski (2026). We are looking for curious engineers, systems programmers, and hardware tinkerers who want to build something unconventional from the ground up.
+
+## 🟡 Rule of MacroMag ™
+Online But Always Updating
 
 We especially welcome help with:
 1. **Systems Programming (Rust / C):** Rewriting the Python PoC runtime into a fast, memory-safe emulator.
