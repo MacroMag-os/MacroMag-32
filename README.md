@@ -1,4 +1,4 @@
- # MacroMag: Modular Offline Computing Architecture
+ # MacroMag: Modular Online Computing Architecture
 
 [![License: GPL v3](https://shields.io)](https://gnu.org)
 [![Status: Experimental](https://shields.io)]()
