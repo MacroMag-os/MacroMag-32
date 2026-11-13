@@ -1,69 +1,82 @@
- # MacroMag-32: The 2026 Computing Revolution
+ # MacroMag: Modular Offline Computing Architecture
 
-[![License: GPL v3]
+[![License: GPL v3](https://shields.io)](https://gnu.org)
+[![Status: Experimental](https://shields.io)]()
 
 > *"Those who are crazy enough to think they can change the world, are the ones who do."* — Steve Jobs
 
-Modern computing has reached a dead end. Current mainstream operating systems and CPU architectures (x86/ARM) are bogged down by forty years of backward compatibility, heavy telemetry, and corporate lock-ins (*eFUSEs*, remote kill-switches), which actively turn perfectly functional devices into e-waste.
+Modern computing is trapped in a cycle of planned obsolescence. Mainstream operating systems and locked-down hardware (*eFUSEs*, remote kill-switches, mandatory cloud telemetry) actively turn perfectly functional electronics into e-waste.
 
-**MacroMag-32 is a radical, commercial-ready computing rebellion.** We are building a brand-new, independent 32-bit hardware-software ecosystem from scratch. 
+**MacroMag is an experimental hardware-software architecture designed for digital sovereignty, modularity, and zero-telemetry offline execution.**
 
-We reject the 1980s paradigms. We reject raw-text command parsing, corporate bloatware, and cloud-dependency. **The revolution begins today.**
+Instead of patching forty-year-old legacy standards, we are building a clean, minimalist ecosystem focused on object-oriented command execution, hardware-level sandboxing, and modular hardware design.
 
 ---
 
 ## ⚡ Core Architectural Pillars
 
-### 1. The Virtualized Object Shell (VOS) — Beyond the 1980s CLI
-MacroMag-32 deprecates traditional raw-text shells (like Bash or CMD). No more messy `grep`, `awk`, or `sed` string-parsing hacks.
-* **Object-Oriented Pipelines:** Commands exchange strongly-typed objects directly in memory cache, not raw strings. 
-* **Native Hypervisor Syntax:** The shell natively manages virtual machine sandboxes. Every third-party execution is isolated at the microkernel hardware level by default.
+### 1. The Virtualized Object Shell (VOS)
+MacroMag replaces traditional raw-text shells with an object-oriented execution environment.
+* **Typed Memory Pipelines:** Commands exchange strongly-typed objects directly in memory rather than parsing fragile text streams (`grep`/`awk`/`sed` hacks).
+* **Native Sandbox Syntax:** Process isolation is built directly into the shell syntax. Every untrusted execution runs inside a lightweight microkernel sandbox by default.
 
-### 2. The Bare-Metal Microkernel
-* **Software-First Roadmap:** We are developing a clean, text-based hypervisor microkernel inside a high-performance emulator (transitioning from a Python proof-of-concept to C/Rust).
-* **Deterministic Execution:** Zero background telemetry, zero cloud polling. 100% of the CPU power goes strictly into executing your isolated virtual environments.
-* **The 5,000 Offline Framework:** The system image embeds a massive, native standard library of 5,000 foundational offline routines (compilers, editors, operational tools), ensuring complete digital sovereignty without requiring internet access.
+### 2. Minimalist Bare-Metal Microkernel (RISC-V Target)
+* **Zero Telemetry, 100% Determinism:** No background cloud polling, no hidden corporate firmware. CPU cycles go strictly into user-defined tasks.
+* **Open Architecture First:** Rather than reinventing proprietary silicon, MacroMag targets open **64-bit RISC-V** hardware and FPGA implementations, leveraging existing modern toolchains (Rust/C/LLVM).
+* **Self-Contained Core:** Designed to operate completely air-gapped with a lean, auditable set of essential system tools.
 
-### 3. Future Physical Realization (The Magnetic Interconnect)
-Once the software specifications achieve perfect stability, the instruction set architecture (ISA) will be cast directly into physical silicon using programmable FPGA hardware.
-* **Decentralized Phantom BIOS:** No central corporate motherboard firmware. Each physical hardware module carries its own micro-BIOS that registers its bounds into the system registry instantly upon physical magnetic connection.
-* **Hot-Plugging Real-time Determinism:** The software layers are hard-coded to handle real-time hardware module addition/removal without runtime crashes.
-
----
-
-## 💻 Paradigm Shift: Old Tech vs. MacroMag-32 VOS
-
-### Example A: Hypervisor Integration
-* **Old World (Docker/Bash):** `docker run -d --name web -p 80:80 nginx`
-* **MacroMag-32 VOS:** `spawn --isolated --image:web_server -> Core.VM`
-
-### Example B: Data Pipelines (Filtering active VMs using >512MB RAM)
-* **Old World (Raw String Parsing):** 
-  ```bash
-  vm-list | grep "RUNNING" | awk '{if (\$3 > 512) print \$1}'
-  ```
-* **MacroMag-32 VOS (Typed Objects):**
-  ```vos
-  vm.list() | filter status == "running" && memory > 512MB | select name
-  ```
+### 3. Long-Term R&D: Magnetic Modularity & Phantom BIOS
+Our long-term hardware vision aims to eliminate single-point-of-failure motherboards and fight e-waste:
+* **Decentralized Phantom BIOS:** Each physical hardware module carries its own minimal firmware descriptor, registering its capabilities dynamically upon connection.
+* **Hot-Swappable Hardware Nodes:** Researching fault-tolerant, magnetic/pogo-pin interconnects for deterministic real-time module replacement without system crashes.
 
 ---
 
-## ✊ The Elite Engineering Squad: Who We Need
+## 💻 Paradigm Shift: VOS Syntax Concept
 
-We are bypassing the noise of standard community forums to recruit a highly focused engineering team (reminiscent of the early Macintosh and NeXT teams). We are actively seeking:
+**Traditional CLI (Raw String Parsing):**
+```bash
+vm-list | grep "RUNNING" | awk '{if (\$3 > 512) print \$1}'
+```
 
-1. **Systems & Kernel Engineers (C / Rust):** To help rewrite the execution loop of our Python emulator into a blazing-fast C/Rust runtime and design the real-time scheduling mechanisms of the microkernel.
-2. **Compiler Architects:** To implement a lightweight assembler and compiler backend for our custom 32-bit Instruction Set Architecture (ISA).
-3. **Hardware Engineers (FPGA / RTL):** To collaborate on the system specifications so that our virtual architecture maps perfectly onto Verilog/VHDL and future open RISC-V hardware.
+**MacroMag VOS (Typed Object Pipeline):**
+```powershell
+vm.list() | filter status == "running" && memory > 512MB | select name
+```
+
+**Sandboxed Execution:**
+```powershell
+spawn --isolated --image:web_server -> Core.VM
+```
 
 ---
 
-## 💼 Commercial Vision
+## 🛠️ Current Status & Roadmap
 
-MacroMag-32 is a **Commercial Open-Source (COSS)** project. While our core developer tools and specifications remain open under the GPL v3 license to foster global innovation, our long-term business strategy focuses on licensing our ultra-secure, offline hypervisor architecture and manufacturing premium, modular physical hardware kits for developers, industrial automation, and high-security environments.
+We are currently in the **Proof-of-Concept (PoC)** phase. Honest engineering comes first:
 
-**Let's build a standard that corporations cannot lock down.**
+- [x] **Phase 1: Architectural Concept & Python Prototype** (`powershell32.py`, basic assembler & simulation scripts).
+- [ ] **Phase 2: Core Emulator Rewrite (In Progress)** — Porting the Python execution loop to **Rust / C** for deterministic performance.
+- [ ] **Phase 3: Minimalist Microkernel** — Booting a basic VOS prototype on QEMU (RISC-V 64-bit).
+- [ ] **Phase 4: FPGA & Hardware Prototyping** — Testing decentralized module discovery on open FPGA boards.
 
 ---
+
+## 🤝 How to Contribute
+
+MacroMag is an ambitious, founder-led open-source project initiated by Adrian Morawski (2026). We are looking for curious engineers, systems programmers, and hardware tinkerers who want to build something unconventional from the ground up.
+
+We especially welcome help with:
+1. **Systems Programming (Rust / C):** Rewriting the Python PoC runtime into a fast, memory-safe emulator.
+2. **RISC-V & Microkernel Architecture:** Designing the minimal IPC (Inter-Process Communication) and sandboxing layer.
+3. **FPGA / Hardware Tinkering:** Prototyping decentralized device registration protocols.
+
+Check the **Issues** tab to see current tasks, or open a Discussion to share architectural feedback.
+
+---
+
+## 💼 Licensing & Vision
+
+MacroMag is licensed under **GPL v3** to ensure the core architecture remains free and open forever. Our long-term goal is to develop open-source developer kits and modular hardware appliances for industrial automation, education, and air-gapped security environments.
+
 *Initiated by Adrian Morawski (2026)*
