@@ -1,9 +1,15 @@
 cff-version: 1.2.0
 message: "If you use this software or architecture, please cite it as below."
-title: "MacroMag: Modular Offline Computing Architecture"
-authors: "Alan Morawski" "Maldyrek" "Adrian Morawski"
+title: "MacroMag: Modular Online Computing Architecture"
+authors:
   - family-names: "Morawski"
     given-names: "Adrian"
     affiliation: "MacroMag Foundation"
-date-released: 2026-01-01
-url: "https://github.com/maldyrek/MacroMag-32"
+  - family-names: "Morawski"
+    given-names: "Alan"
+    affiliation: "MacroMag Foundation"
+  - name: "maldyrek"
+    affiliation: "MacroMag Foundation"
+date-released: 2026-11-13
+url: "https://github.com/MacroMag-os/MacroMag-32"
+license: GPL-3.0
