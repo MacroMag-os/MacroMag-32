@@ -1,0 +1,19 @@
+# Domyślnie za cały projekt i jego kierunek odpowiada Founder & CEO
+* @adrianmorawski713
+
+# Kluczowe dokumenty prawne, licencyjne i zarządcze (tylko Founder & CEO)
+/LICENSE @adrianmorawski713
+/GOVERNANCE.md @adrianmorawski713
+/TRADEMARKS.md @adrianmorawski713
+/CITATION.cff @adrianmorawski713
+/README.md @adrianmorawski713
+/.github/CODEOWNERS @adrianmorawski713
+
+# Rdzeń systemu i architektura (Founder & CEO + Administrator ds. kodu i bezpieczeństwa)
+/Core/ @adrianmorawski713 @sxalanek
+/Source/ @adrianmorawski713 @sxalanek
+/SECURITY.md @adrianmorawski713 @sxalanek
+
+# Dokumentacja i wsparcie społeczności (Founder & CEO + Administratorzy)
+/docs/ @adrianmorawski713 @maldyrek @sxalanek
+/CONTRIBUTING.md @adrianmorawski713 @maldyrek
