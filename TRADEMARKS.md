@@ -35,5 +35,5 @@ You **may NOT**, without prior written authorization from the Core Maintainer Te
 ---
 
 ## 5. Contact & Governing Law
-* For trademark inquiries or written permissions, contact: **[wpisz-email-prawny@domena.com]**.
+* For trademark inquiries or written permissions, contact: **[macromagfoundation@gmail.com]**. 
 * This Trademark Policy shall be governed by and construed in accordance with the laws of **Poland** and applicable **European Union** intellectual property regulations.
