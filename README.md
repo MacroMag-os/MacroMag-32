@@ -34,8 +34,12 @@ Our long-term hardware vision aims to eliminate single-point-of-failure motherbo
 * **Decentralized Phantom BIOS:** Each physical hardware module carries its own minimal firmware descriptor, registering its capabilities dynamically upon connection.
 * **Hot-Swappable Hardware Nodes:** Researching fault-tolerant, magnetic/pogo-pin interconnects for deterministic real-time module replacement without system crashes.
 
-##  🤝 MacroMag Authors
-Maldyrek (@maldyrek) As Admin, Alan Morawski (@sxalanek) As 2nd Admin, Adrian Morawski (@adrianmorawski713) As CEO
+## 🤝 Project Leadership & Team
+
+* **Adrian Morawski (@adrianmorawski713)** — **Founder & CEO** (Project Creator, Lead Architect & Vision)
+* **Alan Morawski (@sxalanek)** — **Core Administrator** (Code, Legal Compliance & Security)
+* **Maldyrek (@maldyrek)** — **Core Administrator** (Operations & Community Management)
+
 
 ---
 
