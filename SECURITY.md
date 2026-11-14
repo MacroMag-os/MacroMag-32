@@ -19,7 +19,7 @@ MacroMag is currently in active Proof-of-Concept (PoC) and R&D development. Secu
 
 If you discover a security vulnerability, memory safety issue, sandbox escape, or cryptographic flaw in MacroMag:
 
-1. **Contact the Security & Legal Lead directly:** Send an encrypted or plain-text report to **[wpisz-email-bezpieczenstwa@domena.com]** (Attention: Alan Morawski, Security & Legal Lead).
+1. **Contact the Security & Legal Lead directly:** Send an encrypted or plain-text report to **[macromagfoundation@gmail.com]** (Attention: Alan Morawski, Security & Legal Lead).
 2. **Use GitHub Private Vulnerability Reporting:** Alternatively, you may submit a confidential report via the **Security -> Advisories -> Report a vulnerability** tab in this repository.
 3. **Include the following details:**
    * Description of the vulnerability and affected component (e.g., RISC-V microkernel, VOS parser, Rust/C runtime).
