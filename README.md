@@ -2,6 +2,8 @@
 
  [![DOI](https://zenodo.org/badge/1421486557.svg)](https://doi.org/10.5281/zenodo.24201693)
 
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/12333/badge)](https://www.bestpractices.dev/projects/12333)
+
 
 [![License: GPL v3](https://shields.io)](https://gnu.org)
 [![Status: Experimental](https://shields.io)]()
