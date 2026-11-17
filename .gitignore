@@ -1,0 +1,33 @@
+# Rust / Cargo build artifacts
+target/
+**/*.rs.bk
+*.pdb
+
+# C / C++ / Assembly build artifacts
+*.o
+*.obj
+*.elf
+*.out
+*.a
+*.so
+*.dylib
+
+# Pre-compiled binaries and disk images (use GitHub Releases instead)
+*.exe
+*.bin
+*.iso
+*.img
+
+# Python cache & environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# IDE & OS temporary files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
