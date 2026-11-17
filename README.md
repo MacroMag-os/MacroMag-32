@@ -80,6 +80,17 @@ MacroMag is an ambitious, founder-led open-source project initiated by Adrian Mo
 ## 🟡 Rule of MacroMag ™
 Online But Always Updating
 
+## ⚠️ Transparency & Security Notice (About `.exe` Files)
+
+If you notice pre-compiled `.exe` binaries in this repository or in our Releases, please note that **they are legitimate, open-source system utilities and prototypes** built for the upcoming **MacroMag-32** ecosystem (for testing and emulation purposes).
+
+* **100% Open Source:** Every binary comes directly from the source code available in this repository (licensed under **GNU GPL v3.0**). You do not have to trust our pre-built files—you can inspect the code and compile everything yourself from scratch.
+* **Zero Telemetry & Safe:** In accordance with the MacroMag Foundation core principles, none of our tools contain telemetry, tracking, or obfuscated scripts.
+* **Why `.exe`?** While our target architecture is a bare-metal RISC-V microkernel, early userspace apps, tools, and simulators are temporarily compiled for Windows to allow rapid testing and development.
+
+If you have any questions about a specific file or want to verify a build, feel free to open an Issue or check the source directories!
+
+
 We especially welcome help with:
 1. **Systems Programming (Rust / C):** Rewriting the Python PoC runtime into a fast, memory-safe emulator.
 2. **RISC-V & Microkernel Architecture:** Designing the minimal IPC (Inter-Process Communication) and sandboxing layer.
