@@ -15,7 +15,31 @@ Modern computing is trapped in a cycle of planned obsolescence. Mainstream opera
 
 Instead of patching forty-year-old legacy standards, we are building a clean, minimalist ecosystem focused on object-oriented command execution, hardware-level sandboxing, and modular hardware design.
 
----
+## 🚀 Quick Start (RISC-V 64-bit Kernel)
+
+### Prerequisites
+To build and boot the MacroMag microkernel prototype from source, install the Rust RISC-V target and QEMU:
+- **Rust toolchain** (`rustup target add riscv64gc-unknown-none-elf`)
+- **QEMU** (`qemu-system-riscv64`)
+
+### Build & Run on QEMU
+1. Clone the repository and navigate to the kernel directory:
+   ```bash
+   git clone https://github.com
+   cd MacroMag-32/kernel
+   ```
+2. Compile the bare-metal microkernel:
+   ```bash
+   cargo build --release --target riscv64gc-unknown-none-elf
+   ```
+3. Boot the kernel in QEMU (headless serial console):
+   ```bash
+   qemu-system-riscv64 -machine virt -bios none -nographic -kernel target/riscv64gc-unknown-none-elf/release/macromag-kernel
+   ```
+
+### Pre-built Prototype (ISO & Binaries)
+Don't want to compile from source? Download pre-built prototype images (`MacroMag-32.iso`) and test utilities directly from our **[GitHub Releases](https://github.com/MacroMag-os/MacroMag-32)** page.
+
 
 ## ⚡ Core Architectural Pillars
 
