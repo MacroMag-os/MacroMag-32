@@ -25,7 +25,7 @@ To build and boot the MacroMag microkernel prototype from source, install the Ru
 ### Build & Run on QEMU
 1. Clone the repository and navigate to the kernel directory:
    ```bash
-   git clone https://github.com
+   git clone https://github.com/MacroMag-os/MacroMag-32
    cd MacroMag-32/kernel
    ```
 2. Compile the bare-metal microkernel:
