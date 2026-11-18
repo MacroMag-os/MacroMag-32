@@ -40,6 +40,13 @@ To build and boot the MacroMag microkernel prototype from source, install the Ru
 ### Pre-built Prototype (ISO & Binaries)
 Don't want to compile from source? Download pre-built prototype images (`MacroMag-32.iso`) and test utilities directly from our **[GitHub Releases](https://github.com/MacroMag-os/MacroMag-32)** page.
 
+## 2. Pure Linux Kernel Core (`x86_64` & `RISC-V`)
+
+Instead of reinventing hardware drivers from scratch, MacroMag leverages a stripped-down, deterministic **Linux Kernel** purely as a hardware abstraction layer.
+
+* **Zero Telemetry, Full Hardware Support:** No background cloud polling, no legacy GNU userland clutter, and immediate compatibility with standard PCs, legacy laptops (Anti E-Waste), and open **RISC-V** boards.
+* **VOS Native Execution:** The kernel boots directly into our **Rust/C** runtime and the Virtualized Object Shell (**VOS**), bypassing traditional Bash/POSIX bottlenecks while keeping strict process sandboxing.
+
 
 ## ⚡ Core Architectural Pillars
 
