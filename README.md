@@ -74,7 +74,7 @@ Our long-term hardware vision aims to eliminate single-point-of-failure motherbo
 
 ## 💜 Support
 **We Need Your Support To: - Create Official Website (macromag.org) of project and paid for code evolution progress mode!**
-# if you want, Go To opencollective Site **[Support](https://opencollective.com/macromag).** Page
+# if you want give us a donate, Go To opencollective Site **[Support](https://opencollective.com/macromag).** Page
 
 ---
 
