@@ -73,7 +73,7 @@ Our long-term hardware vision aims to eliminate single-point-of-failure motherbo
 * **Maldyrek (@maldyrek)** — **Core Administrator** (Operations & Community Management)
 
 ## 💜 Support
-**We Need Your Support To: - Create Official Web site of project and paid for code evolution progress mode!**
+**We Need Your Support To: - Create Official Website (macromag.org) of project and paid for code evolution progress mode!**
 # if you want, Go To opencollective Site **[Support](https://opencollective.com/macromag).** Page
 
 ---
