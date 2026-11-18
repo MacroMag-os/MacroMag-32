@@ -47,6 +47,7 @@ Instead of reinventing hardware drivers from scratch, MacroMag leverages a strip
 * **Zero Telemetry, Full Hardware Support:** No background cloud polling, no legacy GNU userland clutter, and immediate compatibility with standard PCs, legacy laptops (Anti E-Waste), and open **RISC-V** boards.
 * **VOS Native Execution:** The kernel boots directly into our **Rust/C** runtime and the Virtualized Object Shell (**VOS**), bypassing traditional Bash/POSIX bottlenecks while keeping strict process sandboxing.
 
+### Enterprise Cloud Architecture (Opt-In): While the Community edition operates strictly air-gapped with zero telemetry, MacroMag Enterprise introduces an optional, deterministic cloud control plane. Leveraging VOS typed object pipelines over encrypted channels, organizations can orchestrate fleets of x86_64 and RISC-V nodes, deploy atomic updates ("Online But Always Updating"), and manage hardware modules remotely—available both as a managed cloud service and a self-hosted on-premise solution.
 
 ## ⚡ Core Architectural Pillars
 
@@ -98,8 +99,8 @@ spawn --isolated --image:web_server -> Core.VM
 We are currently in the **Proof-of-Concept (PoC)** phase. Honest engineering comes first:
 
 - [x] **Phase 1: Architectural Concept & Python Prototype** (`powershell32.py`, basic assembler & simulation scripts).
-- [ ] **Phase 2: Core Emulator Rewrite (In Progress)** — Porting the Python execution loop to **Rust / C** for deterministic performance.
-- [ ] **Phase 3: Minimalist Microkernel** — Booting a basic VOS prototype on QEMU (RISC-V 64-bit).
+- [X] **Phase 2: Core Emulator Rewrite (In Progress)** — Porting the Python execution loop to **Rust / C** for deterministic performance.
+- [ ] **Phase 3: Minimalist Value Product** — Linux Based system graphic with new "linux-os" for all and enterprise model
 - [ ] **Phase 4: FPGA & Hardware Prototyping** — Testing decentralized module discovery on open FPGA boards.
 
 ---
@@ -109,7 +110,7 @@ We are currently in the **Proof-of-Concept (PoC)** phase. Honest engineering com
 MacroMag is an ambitious, founder-led open-source project initiated by Adrian Morawski (2026). We are looking for curious engineers, systems programmers, and hardware tinkerers who want to build something unconventional from the ground up.
 
 ## 🟡 Rule of MacroMag ™
-Online But Always Updating
+Online But Always Updating, We giving two versions of MacroMag OS: Free for people, paid for enterprises. 
 
 ## ⚠️ Transparency & Security Notice (About `.exe` Files)
 
@@ -124,7 +125,7 @@ If you have any questions about a specific file or want to verify a build, feel 
 
 We especially welcome help with:
 1. **Systems Programming (Rust / C):** Rewriting the Python PoC runtime into a fast, memory-safe emulator.
-2. **RISC-V & Microkernel Architecture:** Designing the minimal IPC (Inter-Process Communication) and sandboxing layer.
+2. **Linux Based system Architecture:** Designing the minimal IPC (Inter-Process Communication) and sandboxing layer.
 3. **FPGA / Hardware Tinkering:** Prototyping decentralized device registration protocols.
 
 Check the **Issues** tab to see current tasks, or open a Discussion to share architectural feedback.
@@ -133,6 +134,6 @@ Check the **Issues** tab to see current tasks, or open a Discussion to share arc
 
 ## 💼 Licensing & Vision
 
-MacroMag is licensed under **GPL v3** to ensure the core architecture remains free and open forever. Our long-term goal is to develop open-source developer kits and modular hardware appliances for industrial automation, education, and air-gapped security environments.
+MacroMag is licensed under **GPL v3** to ensure the core architecture remains free and open forever. Our long-term goal is to develop open-source developer kits and modular hardware appliances for industrial automation, education, and air-gapped security environments. Adrian Morawski Is Official Project Leader (like CEO) 
 
 *Initiated by Adrian Morawski (2026)*
