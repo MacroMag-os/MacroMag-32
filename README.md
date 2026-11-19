@@ -1,5 +1,10 @@
  # MacroMag Foundation: Modular Online Computing Architecture by Adrian Morawski
 
+<p align="center">
+  <img src="banner.gif" alt="MacroMag OS Demo" width="100%">
+</p>
+
+
  [![DOI](https://zenodo.org/badge/1421486557.svg)](https://doi.org/10.5281/zenodo.24201693)
 
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/16688/badge)](https://www.bestpractices.dev/projects/16688)
