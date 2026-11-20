@@ -67,7 +67,7 @@ echo "[5/5] Building bootable MacroMag-x86_64.iso..."
 if [ -f "kernel/arch/x86/boot/bzImage" ]; then
     cp "kernel/arch/x86/boot/bzImage" "$ISO_DIR/boot/vmlinuz"
 else
-    cp /boot/vmlinuz-* "$ISO_DIR/boot/vmlinuz"
+    sudo cp $(ls /boot/vmlinuz-* | head -n 1) "$ISO_DIR/boot/vmlinuz" && sudo chmod 644 "$ISO_DIR/boot/vmlinuz"
 fi
 
 cat << 'EOF' > "$ISO_DIR/boot/grub/grub.cfg"
