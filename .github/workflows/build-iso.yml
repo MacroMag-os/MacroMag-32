@@ -1,0 +1,35 @@
+name: Build MacroMag-32 Bootable ISO
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y musl-tools xorriso cpio gzip build-essential linux-image-generic
+          sudo chmod +r /boot/vmlinuz*
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-unknown-linux-musl
+
+      - name: Build ISO
+        run: |
+          chmod +x build_iso.sh
+          ./build_iso.sh
+
+      - name: Upload MacroMag-32.iso Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MacroMag-32-ISO
+          path: MacroMag-32.iso
