@@ -83,7 +83,7 @@ Our long-term hardware vision aims to eliminate single-point-of-failure motherbo
 
 ### 4. MUR (MacroMag User Repository) 
 Inspired Arch User Repository, Tools build in system connecting with VOS simple commands, connected with system. 
-
+visit Repository: **https://github.com/MacroMag-os/mur**
 ## 🤝 Project Leadership & Team
 
 * **Adrian Morawski (@adrianmorawski713)** — **Founder & CEO** (Project Creator, Lead Architect & Vision)
