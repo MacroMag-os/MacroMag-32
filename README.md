@@ -20,7 +20,7 @@ Modern computing is trapped in a cycle of planned obsolescence. Mainstream opera
 
 Instead of patching forty-year-old legacy standards, we are building a clean, minimalist ecosystem focused on object-oriented command execution, hardware-level sandboxing, and modular hardware design.
 
-## 🚀 Quick Start (RISC-V 64-bit Kernel)
+## 🚀 Quick Start
 
 ### Prerequisites
 To build and boot the MacroMag linux based system, install the Rust RISC-V target and QEMU:
