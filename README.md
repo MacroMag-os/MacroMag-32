@@ -9,19 +9,17 @@
 
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/16688/badge)](https://www.bestpractices.dev/projects/16688)
 
-[![License: GPL v3](https://shields.io)](https://gnu.org)
-[![Status: Experimental](https://shields.io)]()
-
 [![License: GPL v3](https://shields.io)](https://github.com)
-[![Status: Experimental](https://shields.io)](https://github.com)
-[![Architecture](https://shields.io)](https://github.com)
-[![Language: Rust & C](https://shields.io)](https://github.com)
-[![Zero Telemetry](https://shields.io)](https://github.com)
-[![GitHub Stars](https://shields.io)](https://github.com/stargazers)
-[![GitHub Forks](https://shields.io)](https://github.com/network/members)
-[![GitHub Issues](https://shields.io)](https://github.com/issues)
-[![Last Commit](https://shields.io)](https://github.com/commits/main)
+[![Status: Experimental](https://shields.io)](https://github.com/MacroMag-os/MacroMag-32)
+[![Architecture](https://shields.io)](https://github.com/MacroMag-os/MacroMag-32)
+[![Language: Rust & C](https://shields.io)](https://github.com/MacroMag-os/MacroMag-32)
+[![Zero Telemetry](https://shields.io)](https://github.com/MacroMag-os/MacroMag-32)
+[![GitHub Stars](https://shields.io)](https://github.com)
+[![GitHub Forks](https://shields.io)](https://github.com)
+[![GitHub Issues](https://shields.io)](https://github.com)
+[![Last Commit](https://shields.io)](https://github.com)
 [![OpenCollective](https://shields.io)](https://opencollective.com)
+
 
 
 > *"Those who are crazy enough to think they can change the world, are the ones who do."* — Steve Jobs
