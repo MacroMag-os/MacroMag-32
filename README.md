@@ -65,7 +65,7 @@ MacroMag replaces traditional raw-text shells with an object-oriented execution 
 * **Typed Memory Pipelines:** Commands exchange strongly-typed objects directly in memory rather than parsing fragile text streams (`grep`/`awk`/`sed` hacks).
 * **Native Sandbox Syntax:** Process isolation is built directly into the shell syntax. Every untrusted execution runs inside a lightweight microkernel sandbox by default.
 
-### 2. Minimalist Bare-Metal Microkernel (RISC-V Target)
+### 2. Graphic iNTERFACE
 * **Zero Telemetry, 100% Determinism:** No background cloud polling, no hidden corporate firmware. CPU cycles go strictly into user-defined tasks.
 * **Open Architecture First:** Rather than reinventing proprietary silicon, MacroMag targets open **64-bit RISC-V** hardware and FPGA implementations, leveraging existing modern toolchains (Rust/C/LLVM).
 * **Self-Contained Core:** Designed to operate completely air-gapped with a lean, auditable set of essential system tools.
