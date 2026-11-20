@@ -1,4 +1,4 @@
- # MacroMag Foundation: Modular Online Computing Architecture by Adrian Morawski
+ # MacroMag OS: Modular Online Computing Architecture by Adrian Morawski
 
 <p align="center">
   <img src="banner.gif" alt="MacroMag OS Demo" width="100%">
