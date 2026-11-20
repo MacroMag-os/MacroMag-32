@@ -13,7 +13,6 @@ permissions:
 jobs:
   build-iso:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -30,24 +29,18 @@ jobs:
 
       - name: Build MacroMag x86_64 ISO
         run: |
-          chmod +x build_iso.sh
-          sudo ./build_iso.sh
+          chmod +x buildiso.sh
+          sudo ./buildiso.sh
 
       - name: Upload ISO as workflow artifact
         uses: actions/upload-artifact@v4
         with:
           name: MacroMag-x86_64-ISO
-          path: MacroMag-x86_64.iso
+          path: "*.iso"
 
       - name: Create GitHub Release (on version tags)
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: MacroMag-x86_64.iso
+          files: "*.iso"
           name: MacroMag OS ${{ github.ref_name }}
-          body: |
-            Automated build of **MacroMag OS** (`x86_64` Live/Install ISO).
-            - Zero-Telemetry Linux Kernel
-            - Virtualized Object Shell (**VOS**) written in Rust
-            - Built-in **Dropbear SSH** server & **Fastfetch**
-            - Default credentials: `root` / `macromag`
