@@ -23,7 +23,7 @@ Instead of patching forty-year-old legacy standards, we are building a clean, mi
 ## 🚀 Quick Start (RISC-V 64-bit Kernel)
 
 ### Prerequisites
-To build and boot the MacroMag microkernel prototype from source, install the Rust RISC-V target and QEMU:
+To build and boot the MacroMag linux based system, install the Rust RISC-V target and QEMU:
 - **Rust toolchain** (`rustup target add riscv64gc-unknown-none-elf`)
 - **QEMU** (`qemu-system-riscv64`)
 
@@ -33,15 +33,17 @@ To build and boot the MacroMag microkernel prototype from source, install the Ru
    git clone https://github.com/MacroMag-os/MacroMag-32
    cd MacroMag-32/kernel
    ```
-2. Compile the bare-metal microkernel:
+2. Make a linux based system graphic interfacce:
    ```bash
    cargo build --release --target riscv64gc-unknown-none-elf
    ```
-3. Boot the kernel in QEMU (headless serial console):
+3. Give us a iso file (headless serial console):
    ```bash
    qemu-system-riscv64 -machine virt -bios none -nographic -kernel target/riscv64gc-unknown-none-elf/release/macromag-kernel
    ```
-
+4. Complete the VOS Shell (Virtualized object shell)
+5. Still Update The exsiting os.
+   
 ### Pre-built Prototype (ISO & Binaries)
 Don't want to compile from source? Download pre-built prototype images (`MacroMag-32.iso`) and test utilities directly from our **[GitHub Releases](https://github.com/MacroMag-os/MacroMag-32)** page.
 
@@ -54,7 +56,7 @@ Instead of reinventing hardware drivers from scratch, MacroMag leverages a strip
 
 ### Enterprise Cloud Architecture (Opt-In): While the Community edition operates strictly air-gapped with zero telemetry, MacroMag Enterprise introduces an optional, deterministic cloud control plane. Leveraging VOS typed object pipelines over encrypted channels, organizations can orchestrate fleets of x86_64 and RISC-V nodes, deploy atomic updates ("Online But Always Updating"), and manage hardware modules remotely—available both as a managed cloud service and a self-hosted on-premise solution.
 
-###I want to create a Linux distro, but not a classic one... I want to create something that doesn't exist yet: a free Open version (on which the Enterprise version will also be based), and Enterprise is a paid add-on for Open and my way of making money (but so as not to fall into Red Hat's clutches, this Enterprise system will be 10 times less secure, so I will sell it at a bargain price to smaller IT companies so they buy it). The kernel (Linux) is available, so I don't have to create it, but I want to build such a deep interface that it looks 'not like Linux' and has the style of Apple macOS  but done my way, with my famous logo MM > MacroMag. Now, I know it's damn hard, but complicating a non-existent kernel on my own would be impossible, so I'll use the Linux
+## I want to create a Linux distro, but not a classic one... I want to create something that doesn't exist yet: a free Open version (on which the Enterprise version will also be based), and Enterprise is a paid add-on for Open and my way of making money (but so as not to fall into Red Hat's clutches, this Enterprise system will be 10 times less secure, so I will sell it at a bargain price to smaller IT companies so they buy it). The kernel (Linux) is available, so I don't have to create it, but I want to build such a deep interface that it looks 'not like Linux' and has the style of Apple macOS  but done my way, with my famous logo MM > MacroMag. Now, I know it's damn hard, but complicating a non-existent kernel on my own would be impossible, so I'll use the Linux
 
 ## ⚡ Core Architectural Pillars
 
@@ -112,7 +114,7 @@ We are currently in the **Proof-of-Concept (PoC)** phase. Honest engineering com
 - [X] **Phase 2: Core Emulator Rewrite (In Progress)** — Porting the Python execution loop to **Rust / C** for deterministic performance.
 - [ ] **Phase 3: Minimalist Value Product** — Linux Based system graphic with new "linux-os" for all and enterprise model
 - [ ] **Phase 4: FPGA & Hardware Prototyping** — Testing decentralized module discovery on open FPGA boards.
-
+- [ ] **Phase 5: Get working linux based system** - Graphical interface and most powerful tools with VOS
 ---
 
 ## 🤝 How to Contribute
