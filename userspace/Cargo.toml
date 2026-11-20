@@ -1,0 +1,8 @@
+[workspace]
+members = ["mm-init", "login", "vos"]
+resolver = "2"
+
+[profile.release]
+opt-level = "z"     # Minimalny rozmiar binarek
+lto = true
+strip = true
