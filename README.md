@@ -33,11 +33,6 @@ Instead of patching forty-year-old legacy standards, we are building a clean, mi
 
 ## 🚀 Quick Start
 
-### Prerequisites
-To build and boot the MacroMag linux based system, install the Rust RISC-V target and QEMU:
-- **Rust toolchain** (`rustup target add riscv64gc-unknown-none-elf`)
-- **QEMU** (`qemu-system-riscv64`)
-
 ### Build & Run on QEMU
 1. Clone the repository and navigate to the kernel directory:
    ```bash
@@ -86,6 +81,9 @@ Our long-term hardware vision aims to eliminate single-point-of-failure motherbo
 * **Decentralized Phantom BIOS:** Each physical hardware module carries its own minimal firmware descriptor, registering its capabilities dynamically upon connection.
 * **Hot-Swappable Hardware Nodes:** Researching fault-tolerant, magnetic/pogo-pin interconnects for deterministic real-time module replacement without system crashes.
 
+### 4. MUR (MacroMag User Repository) 
+Inspired Arch User Repository, Tools build in system connecting with VOS simple commands, connected with system. 
+
 ## 🤝 Project Leadership & Team
 
 * **Adrian Morawski (@adrianmorawski713)** — **Founder & CEO** (Project Creator, Lead Architect & Vision)
@@ -122,10 +120,10 @@ spawn --isolated --image:web_server -> Core.VM
 We are currently in the **Proof-of-Concept (PoC)** phase. Honest engineering comes first:
 
 - [x] **Phase 1: Architectural Concept & Python Prototype** (`powershell32.py`, basic assembler & simulation scripts).
-- [X] **Phase 2: Core Emulator Rewrite (In Progress)** — Porting the Python execution loop to **Rust / C** for deterministic performance.
-- [ ] **Phase 3: Minimalist Value Product** — Linux Based system graphic with new "linux-os" for all and enterprise model
-- [ ] **Phase 4: FPGA & Hardware Prototyping** — Testing decentralized module discovery on open FPGA boards.
-- [ ] **Phase 5: Get working linux based system** - Graphical interface and most powerful tools with VOS
+- [X] **Phase 2: Create MUR (MacroMag User Repository)** — Write The Arch inspired user Repository with tools build in system MacroMag **Rust / C** for deterministic performance.
+- [ ] **Phase 3: Minimalist Value Product (in progress)** — Linux Based system graphic with new "linux-os" for all and enterprise model
+- [ ] **Phase 4: Get full working system (.iso) file** — With MUR connect, working commands, VOS. 
+- [ ] **Phase 5: Get working GUI added to system** - Graphical interface and most powerful tools with VOS
 ---
 
 ## 🤝 How to Contribute
@@ -147,9 +145,9 @@ If you have any questions about a specific file or want to verify a build, feel 
 
 
 We especially welcome help with:
-1. **Systems Programming (Rust / C):** Rewriting the Python PoC runtime into a fast, memory-safe emulator.
-2. **Linux Based system Architecture:** Designing the minimal IPC (Inter-Process Communication) and sandboxing layer.
-3. **FPGA / Hardware Tinkering:** Prototyping decentralized device registration protocols.
+1. **Linux Distribution Creators:**
+2. **Linux Based system Architecture:**
+3. **Rust & C Engineers:**
 
 Check the **Issues** tab to see current tasks, or open a Discussion to share architectural feedback.
 
