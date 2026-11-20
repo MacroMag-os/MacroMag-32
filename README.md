@@ -9,16 +9,17 @@
 
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/16688/badge)](https://www.bestpractices.dev/projects/16688)
 
-[![License: GPL v3](https://shields.io)](https://github.com)
-[![Status: Experimental](https://shields.io)](https://github.com/MacroMag-os/MacroMag-32)
-[![Architecture](https://shields.io)](https://github.com/MacroMag-os/MacroMag-32)
-[![Language: Rust & C](https://shields.io)](https://github.com/MacroMag-os/MacroMag-32)
-[![Zero Telemetry](https://shields.io)](https://github.com/MacroMag-os/MacroMag-32)
-[![GitHub Stars](https://shields.io)](https://github.com)
-[![GitHub Forks](https://shields.io)](https://github.com)
-[![GitHub Issues](https://shields.io)](https://github.com)
-[![Last Commit](https://shields.io)](https://github.com)
-[![OpenCollective](https://shields.io)](https://opencollective.com)
+[![License: GPL v3](https://badgen.net)](https://github.com)
+[![Status: Experimental](https://badgen.net)](https://github.com/MacroMag-os/MacroMag-32)
+[![Architecture](https://badgen.net)](https://github.com/MacroMag-os/MacroMag-32)
+[![Language: Rust & C](https://badgen.net)](https://github.com/MacroMag-os/MacroMag-32)
+[![Zero Telemetry](https://badgen.net)](https://github.com/MacroMag-os/MacroMag-32)
+[![GitHub Stars](https://badgen.net)](https://github.com)
+[![GitHub Forks](https://badgen.net)](https://github.com)
+[![GitHub Issues](https://badgen.net)](https://github.com)
+[![Last Commit](https://badgen.net)](https://github.com)
+[![OpenCollective](https://badgen.net)](https://opencollective.com)
+
 
 
 
