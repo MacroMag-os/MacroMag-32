@@ -58,7 +58,8 @@ echo "=== 3. Jądro Linux oraz bootloader Limine (UEFI + BIOS) ==="
 sudo cp /boot/vmlinuz-$KVER build_tmp/vmlinuz
 sudo chmod 644 build_tmp/vmlinuz
 
-git clone https://github.com --branch=v8.x-binary --depth=1 build_tmp/limine
+git clone https://github.com/limine-bootloader/limine.git --branch=v8.x-binary --depth=1 build_tmp/limine
+
 make -C build_tmp/limine
 
 echo "=== 4. Generowanie hybrydowego obrazu MacroMag-32.iso ==="
