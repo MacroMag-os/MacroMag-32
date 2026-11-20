@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+echo "=== 0. Instalacja zależności ==="
+sudo apt-get update
+sudo apt-get install -y xorriso cpio curl git build-essential
+
 echo "=== 1. Kompilacja statycznej binarki mm-init (Rust musl) ==="
 rustup target add x86_64-unknown-linux-musl
 cd mm-init
@@ -9,13 +13,18 @@ cd ..
 
 echo "=== 2. Tworzenie struktury systemu plików (initramfs) ==="
 rm -rf build_tmp
-mkdir -p build_tmp/rootfs/{bin,proc,sys,dev}
+mkdir -p build_tmp/rootfs/{bin,etc,proc,sys,dev}
 
 # Kopiowanie naszego procesu VOS jako główny /init
 cp mm-init/target/x86_64-unknown-linux-musl/release/mm-init build_tmp/rootfs/init
 chmod +x build_tmp/rootfs/init
 
-# Minimalne narzędzie mount (statyczny busybox) do podpięcia /proc i /sys
+# Kopiowanie /etc/os-release do obrazu systemu
+if [ -f etc/os-release ]; then
+    cp etc/os-release build_tmp/rootfs/etc/os-release
+fi
+
+# Poprawny link do statycznej binarki busybox (x86_64)
 curl -L https://busybox.net -o build_tmp/rootfs/bin/busybox
 chmod +x build_tmp/rootfs/bin/busybox
 ln -s busybox build_tmp/rootfs/bin/mount
@@ -26,8 +35,8 @@ find . | cpio -o -H newc | gzip > ../initramfs.img
 cd ../..
 
 echo "=== 3. Pobieranie jądra Linux oraz bootloadera Limine ==="
-# Wyciągnięcie jądra Linux z systemu budującego (np. Ubuntu runnera)
-cp /boot/vmlinuz-$(uname -r) build_tmp/vmlinuz || cp /boot/vmlinuz* build_tmp/vmlinuz
+sudo cp /boot/vmlinuz-$(uname -r) build_tmp/vmlinuz || sudo cp /boot/vmlinuz* build_tmp/vmlinuz
+sudo chmod 644 build_tmp/vmlinuz
 
 git clone https://github.com --branch=v8.x-binary --depth=1 build_tmp/limine
 make -C build_tmp/limine
