@@ -9,16 +9,16 @@
 
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/16688/badge)](https://www.bestpractices.dev/projects/16688)
 
-[![License: GPL v3](https://badgen.net)](https://github.com)
-[![Status: Experimental](https://badgen.net)](https://github.com/MacroMag-os/MacroMag-32)
-[![Architecture](https://badgen.net)](https://github.com/MacroMag-os/MacroMag-32)
-[![Language: Rust & C](https://badgen.net)](https://github.com/MacroMag-os/MacroMag-32)
-[![Zero Telemetry](https://badgen.net)](https://github.com/MacroMag-os/MacroMag-32)
-[![GitHub Stars](https://badgen.net)](https://github.com)
-[![GitHub Forks](https://badgen.net)](https://github.com)
-[![GitHub Issues](https://badgen.net)](https://github.com)
-[![Last Commit](https://badgen.net)](https://github.com)
-[![OpenCollective](https://badgen.net)](https://opencollective.com)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Status: Experimental](https://img.shields.io/badge/Status-Experimental-orange.svg)](#)
+[![Language: Rust & C](https://img.shields.io/badge/Language-Rust%20%26%20C-dea584.svg)](#)
+[![Zero Telemetry](https://img.shields.io/badge/Telemetry-Zero-brightgreen.svg)](#)
+[![Build MacroMag ISO](https://github.com/MacroMag-os/MacroMag-32/actions/workflows/release.yml/badge.svg)](https://github.com/MacroMag-os/MacroMag-32/actions/workflows/release.yml)
+[![GitHub Stars](https://img.shields.io/github/stars/MacroMag-os/MacroMag-32?style=social)](https://github.com/MacroMag-os/MacroMag-32/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/MacroMag-os/MacroMag-32?style=social)](https://github.com/MacroMag-os/MacroMag-32/network/members)
+[![GitHub Issues](https://img.shields.io/github/issues/MacroMag-os/MacroMag-32)](https://github.com/MacroMag-os/MacroMag-32/issues)
+[![Last Commit](https://img.shields.io/github/last-commit/MacroMag-os/MacroMag-32)](https://github.com/MacroMag-os/MacroMag-32/commits/main)
+[![Open Collective](https://img.shields.io/opencollective/all/macromag?label=Open%20Collective)](https://opencollective.com/macromag)
 
 
 
