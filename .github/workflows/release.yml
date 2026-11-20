@@ -30,7 +30,7 @@ jobs:
       - name: Build MacroMag x86_64 ISO
         run: |
           chmod +x buildiso.sh
-          sudo ./buildiso.sh
+          ./buildiso.sh
 
       - name: Upload ISO as workflow artifact
         uses: actions/upload-artifact@v4
