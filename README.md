@@ -12,6 +12,18 @@
 [![License: GPL v3](https://shields.io)](https://gnu.org)
 [![Status: Experimental](https://shields.io)]()
 
+[![License: GPL v3](https://shields.io)](https://github.com)
+[![Status: Experimental](https://shields.io)](https://github.com)
+[![Architecture](https://shields.io)](https://github.com)
+[![Language: Rust & C](https://shields.io)](https://github.com)
+[![Zero Telemetry](https://shields.io)](https://github.com)
+[![GitHub Stars](https://shields.io)](https://github.com/stargazers)
+[![GitHub Forks](https://shields.io)](https://github.com/network/members)
+[![GitHub Issues](https://shields.io)](https://github.com/issues)
+[![Last Commit](https://shields.io)](https://github.com/commits/main)
+[![OpenCollective](https://shields.io)](https://opencollective.com)
+
+
 > *"Those who are crazy enough to think they can change the world, are the ones who do."* — Steve Jobs
 
 Modern computing is trapped in a cycle of planned obsolescence. Mainstream operating systems and locked-down hardware (*eFUSEs*, remote kill-switches, mandatory cloud telemetry) actively turn perfectly functional electronics into e-waste.
