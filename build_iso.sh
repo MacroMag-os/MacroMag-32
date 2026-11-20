@@ -39,6 +39,7 @@ sudo cp /boot/vmlinuz-$(uname -r) build_tmp/vmlinuz || sudo cp /boot/vmlinuz* bu
 sudo chmod 644 build_tmp/vmlinuz
 
 git clone https://github.com --branch=v8.x-binary --depth=1 build_tmp/limine
+
 make -C build_tmp/limine
 
 echo "=== 4. Składanie obrazu ISO ==="
