@@ -2,3 +2,17 @@
 name = "vos"
 version = "0.1.0"
 edition = "2021"
+authors = ["Adrian Morawski <adrianmorawski713@github.com>"]
+description = "Virtualized Object Shell (VOS) - Native PID 1 Shell for MacroMag OS"
+license = "GPL-3.0"
+
+# Brak zewnętrznych bibliotek (zero dependencies) = 100% determinizmu i szybka kompilacja na x86_64 oraz RISC-V
+[dependencies]
+
+[profile.release]
+opt-level = "z"       # Minimalny rozmiar binarki (idealne pod initramfs)
+lto = true            # Link-Time Optimization (usuwa nieużywany kod)
+codegen-units = 1     # Maksymalna optymalizacja
+panic = "abort"       # Brak narzutu na rozwijanie stosu
+strip = true          # Usuwa symbole debugowania z gotowego pliku
+
