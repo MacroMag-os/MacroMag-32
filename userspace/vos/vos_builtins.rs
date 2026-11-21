@@ -26,6 +26,32 @@ use std::process::Command;
             run_external(bin, &refs)
         }
 
+const SYS_REBOOT_X86_64: i64 = 169;
+const LINUX_REBOOT_MAGIC1: u64 = 0xfee1dead;
+const LINUX_REBOOT_MAGIC2: u64 = 672274793;
+const LINUX_REBOOT_CMD_RESTART: u64 = 0x01234567;
+const LINUX_REBOOT_CMD_POWER_OFF: u64 = 0x4321fedc;
+
+extern "C" {
+    fn syscall(number: i64, ...) -> i64;
+}
+
+// Dopisz wewnątrz match (module, action) w execute_builtin:
+        ("sys", "reboot") => {
+            println!("Restartowanie MacroMag OS...");
+            unsafe {
+                syscall(SYS_REBOOT_X86_64, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART, 0u64);
+            }
+            Ok(Vec::new())
+        }
+        ("sys", "poweroff") => {
+            println!("Wyłączanie zasilania...");
+            unsafe {
+                syscall(SYS_REBOOT_X86_64, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_POWER_OFF, 0u64);
+            }
+            Ok(Vec::new())
+        }
+
 /// Główny router komend wywoływany w Twoim obecnym main.rs
 pub fn execute_builtin(module: &str, action: &str, args: &[VosValue]) -> Result<Vec<VosObject>, String> {
     match (module, action) {
