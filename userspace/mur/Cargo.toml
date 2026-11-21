@@ -1,0 +1,11 @@
+[package]
+name = "mur"
+version = "0.1.0"
+edition = "2021"
+authors = ["Adrian Morawski <adrianmorawski713@github.com>"]
+description = "MUR (MacroMag User Repository) - Package Manager for MacroMag OS"
+license = "GPL-3.0"
+
+# MUR - https://github.com/MacroMag-os/mur
+# Zero zewnętrznych zależności = czysta kompilacja na x86_64 i RISC-V
+[dependencies]
