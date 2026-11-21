@@ -1,0 +1,18 @@
+Pipeline       = [ SandboxBlock ] , Command , { "|" , Transform } ;
+
+SandboxBlock   = "sandbox" , "(" , [ SandboxArgs ] , ")" , "->" ;
+SandboxArgs    = SandboxArg , { "," , SandboxArg } ;
+SandboxArg     = Ident , ":" , Value ;
+
+Command        = Module , "." , Action , "(" , [ ArgList ] , ")" ;
+Transform      = FilterExpr | SelectExpr | SortExpr | LimitExpr ;
+
+FilterExpr     = "where" , Condition , { ( "&&" | "||" ) , Condition } ;
+Condition      = Ident , Operator , Value ;
+SelectExpr     = "select" , Ident , { "," , Ident } ;
+SortExpr       = "sort_by" , Ident , [ "asc" | "desc" ] ;
+LimitExpr      = "limit" , Integer ;
+
+Operator       = "==" | "!=" | ">" | "<" | ">=" | "<=" ;
+Value          = String | Integer | Float | SizeLiteral | Boolean ;
+SizeLiteral    = Integer , ( "B" | "KB" | "MB" | "GB" ) ;
