@@ -1,4 +1,4 @@
- # MacroMag OS: Modular Online Computing Architecture by Adrian Morawski
+ # MacroMag OS: Modular Linux Distribution New Architecture by Adrian Morawski
 
 <p align="center">
   <img src="banner.gif" alt="MacroMag OS Demo" width="100%">
@@ -27,28 +27,7 @@
 
 Modern computing is trapped in a cycle of planned obsolescence. Mainstream operating systems and locked-down hardware (*eFUSEs*, remote kill-switches, mandatory cloud telemetry) actively turn perfectly functional electronics into e-waste.
 
-**MacroMag is an experimental hardware-software architecture designed for digital sovereignty, modularity, and zero-telemetry online execution.**
-
-Instead of patching forty-year-old legacy standards, we are building a clean, minimalist ecosystem focused on object-oriented command execution, hardware-level sandboxing, and modular hardware design.
-
-## 🚀 Quick Start
-
-### Build & Run on QEMU
-1. Clone the repository and navigate to the kernel directory:
-   ```bash
-   git clone https://github.com/MacroMag-os/MacroMag-32
-   cd MacroMag-32/kernel
-   ```
-2. Make a linux based system graphic interfacce:
-   ```bash
-   cargo build --release --target riscv64gc-unknown-none-elf
-   ```
-3. Give us a iso file (headless serial console):
-   ```bash
-   qemu-system-riscv64 -machine virt -bios none -nographic -kernel target/riscv64gc-unknown-none-elf/release/macromag-kernel
-   ```
-4. Complete the VOS Shell (Virtualized object shell)
-5. Still Update The exsiting os.
+**MacroMag is an experimental Linux Distribution architecture designed for, modularity, and zero-telemetry online execution.** 
    
 ### Pre-built Prototype (ISO & Binaries)
 Don't want to compile from source? Download pre-built prototype images (`MacroMag-32.iso`) and test utilities directly from our **[GitHub Releases](https://github.com/MacroMag-os/MacroMag-32)** page.
@@ -84,9 +63,13 @@ Our long-term hardware vision aims to eliminate single-point-of-failure motherbo
 ### 4. MUR (MacroMag User Repository) 
 Inspired Arch User Repository, Tools build in system connecting with VOS simple commands, connected with system. 
 visit Repository: **https://github.com/MacroMag-os/mur**
+
+### 5. MacroMag As New Linux Distribution
+We want to be the most powerful But simple linux Distribution with good GUI and a lot of Functional useful system data
+
 ## 🤝 Project Leadership & Team
 
-* **Adrian Morawski (@adrianmorawski713)** — **Founder & CEO** (Project Creator, Lead Architect & Vision)
+* **Adrian Morawski (@adrianmorawski713)** — **Founder & CEO** (Project Creator, Lead Architet & Vision)
 * **Alan Morawski (@sxalanek)** — **Core Administrator** (Code, Legal Compliance & Security)
 * **Maldyrek (@maldyrek)** — **Core Administrator** (Operations & Community Management)
 
