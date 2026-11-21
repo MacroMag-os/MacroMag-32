@@ -14,7 +14,7 @@ fn main() {
         return;
     }
 
-    match args.as_str() {
+    match args[1].as_str() {
         "sync" => sync_repository(),
         "list" => list_packages(),
         "install" => {
@@ -22,7 +22,7 @@ fn main() {
                 eprintln!("[MUR Error]: Podaj nazwę pakietu, np. mur install <nazwa>");
                 return;
             }
-            install_package(&args);
+            install_package(&args[2]);
         }
         _ => print_help(),
     }
