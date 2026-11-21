@@ -335,3 +335,70 @@ other => Err(format!("Oczekiwano wartości, otrzymano {:?}", other)),
 }
 }
 }
+pub enum Token {
+    // ... istniejące tokeny ...
+    And,        // &&
+    Or,         // ||
+}
+            '&' => {
+                chars.next();
+                if chars.peek() == Some(&'&') {
+                    chars.next();
+                    tokens.push(Token::And);
+                } else {
+                    return Err("Oczekiwano '&&'".into());
+                }
+            }
+            '|' => {
+                chars.next();
+                if chars.peek() == Some(&'|') {
+                    chars.next();
+                    tokens.push(Token::Or); // Podwójny znak || to operator logiczny
+                } else {
+                    tokens.push(Token::Pipe); // Pojedynczy znak | to potok VOS
+                }
+            }
+    fn parse_transform(&mut self) -> Result<VosTransform, String> {
+        match self.next() {
+            Token::Where => {
+                let expr = self.parse_or()?;
+                Ok(VosTransform::Where(expr))
+            }
+            // ... reszta transformacji (Select, Limit) bez zmian ...
+    fn parse_or(&mut self) -> Result<crate::vos_core::FilterExpr, String> {
+        let mut left = self.parse_and()?;
+        while self.peek() == &Token::Or {
+            self.next(); // konsumujemy '||'
+            let right = self.parse_and()?;
+            left = crate::vos_core::FilterExpr::Or(Box::new(left), Box::new(right));
+        }
+        Ok(left)
+    }
+
+    fn parse_and(&mut self) -> Result<crate::vos_core::FilterExpr, String> {
+        let mut left = self.parse_condition()?;
+        while self.peek() == &Token::And {
+            self.next(); // konsumujemy '&&'
+            let right = self.parse_condition()?;
+            left = crate::vos_core::FilterExpr::And(Box::new(left), Box::new(right));
+        }
+        Ok(left)
+    }
+
+    fn parse_condition(&mut self) -> Result<crate::vos_core::FilterExpr, String> {
+        let field = match self.next() {
+            Token::Ident(s) => s,
+            other => return Err(format!("Oczekiwano nazwy pola w 'where', jest {:?}", other)),
+        };
+        let op = match self.next() {
+            Token::Eq => CompareOp::Eq,
+            Token::Neq => CompareOp::Neq,
+            Token::Gt => CompareOp::Gt,
+            Token::Lt => CompareOp::Lt,
+            Token::Gte => CompareOp::Gte,
+            Token::Lte => CompareOp::Lte,
+            other => return Err(format!("Nieznany operator porównania: {:?}", other)),
+        };
+        let value = self.parse_value()?;
+        Ok(crate::vos_core::FilterExpr::Condition { field, op, value })
+    }
