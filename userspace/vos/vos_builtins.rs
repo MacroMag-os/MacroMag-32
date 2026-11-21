@@ -131,3 +131,11 @@ fn fs_cat(path: &str) -> Result<Vec<VosObject>, String> {
         .collect();
     Ok(list)
 }
+        ("mur", "sync") => run_external("/usr/bin/mur", &["sync"]),
+        ("mur", "list") => run_external("/usr/bin/mur", &["list"]),
+        ("mur", "install") => {
+            let Some(VosValue::Text(pkg)) = args.first() else {
+                return Err("mur.install() wymaga nazwy pakietu".into());
+            };
+            run_external("/usr/bin/mur", &["install", pkg])
+        }
