@@ -1,6 +1,30 @@
 use crate::vos_core::{VosObject, VosValue};
 use std::collections::HashMap;
 use std::fs;
+use std::process::Command;
+
+// Wewnątrz match (module, action) w execute_builtin:
+        ("mur", "sync") => run_external("/usr/bin/mur", &["sync"]),
+        ("mur", "list") => run_external("/usr/bin/mur", &["list"]),
+        ("mur", "install") => {
+            let Some(VosValue::Text(pkg)) = args.first() else {
+                return Err("mur.install() wymaga nazwy pakietu, np. mur.install(\"fast-editor\")".into());
+            };
+            run_external("/usr/bin/mur", &["install", pkg.as_str()])
+        }
+        ("sys", "exec") => {
+            let Some(VosValue::Text(bin)) = args.first() else {
+                return Err("sys.exec() wymaga ścieżki lub nazwy programu, np. sys.exec(\"/usr/bin/mur\")".into());
+            };
+            let str_args: Vec<String> = args.iter().skip(1).map(|v| match v {
+                VosValue::Text(s) => s.clone(),
+                VosValue::Int(i) => i.to_string(),
+                VosValue::Bytes(b) => b.to_string(),
+                VosValue::Bool(b) => b.to_string(),
+            }).collect();
+            let refs: Vec<&str> = str_args.iter().map(|s| s.as_str()).collect();
+            run_external(bin, &refs)
+        }
 
 /// Główny router komend wywoływany w Twoim obecnym main.rs
 pub fn execute_builtin(module: &str, action: &str, args: &[VosValue]) -> Result<Vec<VosObject>, String> {
@@ -139,3 +163,28 @@ fn fs_cat(path: &str) -> Result<Vec<VosObject>, String> {
             };
             run_external("/usr/bin/mur", &["install", pkg])
         }
+
+/// Uruchamia zewnętrzny program (np. /usr/bin/mur) i zwraca wynik jako strumień obiektów VOS
+fn run_external(program: &str, args: &[&str]) -> Result<Vec<VosObject>, String> {
+    let output = Command::new(program)
+        .args(args)
+        .output()
+        .map_err(|e| format!("Nie udało się uruchomić '{}': {}", program, e))?;
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+
+    if !output.status.success() && !stderr.is_empty() {
+        return Err(stderr.trim().to_string());
+    }
+
+    let mut list = Vec::new();
+    for (idx, line) in stdout.lines().enumerate() {
+        let mut obj = HashMap::new();
+        obj.insert("line".into(), VosValue::Int((idx + 1) as i64));
+        obj.insert("output".into(), VosValue::Text(line.to_string()));
+        list.push(obj);
+    }
+
+    Ok(list)
+}
