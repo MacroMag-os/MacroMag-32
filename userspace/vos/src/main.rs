@@ -160,7 +160,7 @@ fn main() {
         } else {
             // 3. Uruchomienie standardowego programu Linuxa w pelnym trybie interaktywnym (jak Bash)
             let parts: Vec<&str> = trimmed.split_whitespace().collect();
-            let prog = parts;
+            let Some(&prog) = parts.first() else { continue; };
             let args = &parts[1..];
 
             match Command::new(prog).args(args).status() {
