@@ -17,6 +17,9 @@ pub fn execute_builtin(module: &str, action: &str, args: &[VosValue]) -> Result<
         ("sys", "ps") => Ok(sys_ps()),
         ("sys", "mem") => Ok(sys_mem()),
         ("sys", "uptime") => Ok(sys_uptime()),
+        ("sys", "cpu") => Ok(sys_cpu()),
+        ("disk", "list") => Ok(disk_list()),
+        ("net", "interfaces") => Ok(net_interfaces()),
         ("sys", "install") => {
             let Some(VosValue::Text(disk)) = args.first() else { return Err("Podaj dysk, np. sys.install(\"/dev/sda\")".into()); };
             sys_install(disk)
@@ -125,4 +128,56 @@ fn run_external(prog: &str, args: &[&str]) -> Result<Vec<VosObject>, String> {
     let out = Command::new(prog).args(args).output().map_err(|e| format!("Blad {}: {}", prog, e))?;
     if !out.status.success() { return Err(String::from_utf8_lossy(&out.stderr).trim().to_string()); }
     Ok(String::from_utf8_lossy(&out.stdout).lines().enumerate().map(|(i, l)| { let mut o = HashMap::new(); o.insert("line".into(), VosValue::Int((i+1) as i64)); o.insert("output".into(), VosValue::Text(l.to_string())); o }).collect())
+}
+
+fn disk_list() -> Vec<VosObject> {
+    let mut list = Vec::new();
+    let Ok(entries) = fs::read_dir("/sys/block") else { return list };
+    for e in entries.flatten() {
+        let name = e.file_name().to_string_lossy().to_string();
+        if name.starts_with("loop") || name.starts_with("ram") { continue; }
+        let sectors: u64 = fs::read_to_string(format!("/sys/block/{}/size", name)).unwrap_or_default().trim().parse().unwrap_or(0);
+        let model = fs::read_to_string(format!("/sys/block/{}/device/model", name)).unwrap_or_else(|_| "Virtual/Block".into()).trim().to_string();
+        let mut o = HashMap::new();
+        o.insert("device".into(), VosValue::Text(format!("/dev/{}", name)));
+        o.insert("model".into(), VosValue::Text(model));
+        o.insert("size".into(), VosValue::Bytes(sectors * 512));
+        list.push(o);
+    }
+    list
+}
+
+fn net_interfaces() -> Vec<VosObject> {
+    let mut list = Vec::new();
+    let Ok(entries) = fs::read_dir("/sys/class/net") else { return list };
+    for e in entries.flatten() {
+        let iface = e.file_name().to_string_lossy().to_string();
+        let state = fs::read_to_string(format!("/sys/class/net/{}/operstate", iface)).unwrap_or_else(|_| "unknown".into()).trim().to_string();
+        let mac = fs::read_to_string(format!("/sys/class/net/{}/address", iface)).unwrap_or_else(|_| "-".into()).trim().to_string();
+        let rx: u64 = fs::read_to_string(format!("/sys/class/net/{}/statistics/rx_bytes", iface)).unwrap_or_default().trim().parse().unwrap_or(0);
+        let mut o = HashMap::new();
+        o.insert("interface".into(), VosValue::Text(iface));
+        o.insert("state".into(), VosValue::Text(state));
+        o.insert("mac".into(), VosValue::Text(mac));
+        o.insert("rx".into(), VosValue::Bytes(rx));
+        list.push(o);
+    }
+    list
+}
+
+fn sys_cpu() -> Vec<VosObject> {
+    let mut list = Vec::new();
+    if let Ok(c) = fs::read_to_string("/proc/cpuinfo") {
+        let mut model = String::from("Unknown CPU");
+        let mut cores = 0i64;
+        for l in c.lines() {
+            if l.starts_with("model name") { model = l.split(":").nth(1).unwrap_or("").trim().to_string(); }
+            if l.starts_with("processor") { cores += 1; }
+        }
+        let mut o = HashMap::new();
+        o.insert("model".into(), VosValue::Text(model));
+        o.insert("cores".into(), VosValue::Int(cores));
+        list.push(o);
+    }
+    list
 }
