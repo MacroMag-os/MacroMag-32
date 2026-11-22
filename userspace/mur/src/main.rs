@@ -16,6 +16,7 @@ struct PkgManifest {
     url: String,
     bin: String,
     sha256: String,
+    archive: String,
 }
 
 fn parse_manifest(pkg_name: &str) -> Option<PkgManifest> {
@@ -34,6 +35,7 @@ fn parse_manifest(pkg_name: &str) -> Option<PkgManifest> {
         url: map.get("url").cloned().unwrap_or_default(),
         bin: map.get("bin").cloned().unwrap_or_else(|| pkg_name.to_string()),
         sha256: map.get("sha256").cloned().unwrap_or_default(),
+        archive: map.get("archive").cloned().unwrap_or_default(),
     })
 }
 
@@ -52,6 +54,8 @@ fn main() {
         "list" => list_packages(),
         "info" => if let Some(pkg) = args.get(2) { info_package(pkg); } else { eprintln!("[MUR Error]: Podaj nazwe pakietu"); },
         "install" => if let Some(pkg) = args.get(2) { install_package(pkg); } else { eprintln!("[MUR Error]: Podaj nazwe pakietu"); },
+        "sys-check" => sys_check(),
+        "sys-upgrade" => sys_upgrade(),
         "remove" => if let Some(pkg) = args.get(2) { remove_package(pkg); } else { eprintln!("[MUR Error]: Podaj nazwe pakietu"); },
         _ => print_help(),
     }
@@ -115,4 +119,70 @@ fn install_package(pkg_name: &str) {
 fn remove_package(pkg_name: &str) {
     let bin = parse_manifest(pkg_name).map(|m| m.bin).unwrap_or_else(|| pkg_name.to_string());
     if fs::remove_file(format!("{}/{}", SYSTEM_BIN_DIR, bin)).is_ok() { println!("[MUR] Usunieto {}.", pkg_name); } else { eprintln!("[MUR Error]: Nie znaleziono."); }
+}
+
+
+const OS_RELEASE_API: &str = "https://github.com";
+const VERSION_FILE: &str = "/etc/macromag_version";
+
+fn get_local_os_version() -> String {
+    fs::read_to_string(VERSION_FILE).unwrap_or_else(|_| "v0.1.0".into()).trim().to_string()
+}
+
+fn fetch_latest_release_info() -> Option<(String, String, String)> {
+    let out = Command::new("curl")
+        .args(["-fsSL", "-H", "User-Agent: MacroMag-MUR", OS_RELEASE_API])
+        .output().ok()?;
+    if !out.status.success() { return None; }
+    let json = String::from_utf8_lossy(&out.stdout);
+    let tag = json.split("\"tag_name\":\"").nth(1)?.split("\"").next()?.to_string();
+    let mut vos_url = String::new();
+    let mut mur_url = String::new();
+    for part in json.split("\"browser_download_url\":\"") {
+        if let Some(u) = part.split("\"").next() {
+            if u.ends_with("/vos") { vos_url = u.to_string(); }
+            if u.ends_with("/mur") { mur_url = u.to_string(); }
+        }
+    }
+    Some((tag, vos_url, mur_url))
+}
+
+fn sys_check() {
+    let local = get_local_os_version();
+    println!("[MUR OTA] Lokalna wersja MacroMag OS: {}", local);
+    match fetch_latest_release_info() {
+        Some((latest, vos_u, _)) => {
+            println!("[MUR OTA] Najnowsze wydanie na GitHub: {}", latest);
+            if local != latest {
+                println!("\x1B[1;33m[DOSTEPNA AKTUALIZACJA]\x1B[0m Wpisz: mur sys-upgrade");
+                if vos_u.is_empty() { println!("(Uwaga: to wydanie zawiera tylko ISO — pobierz je z GitHub Releases)"); }
+            } else {
+                println!("\x1B[1;32m[OK]\x1B[0m Masz najnowsza wersje systemu!");
+            }
+        }
+        None => eprintln!("[MUR Error]: Nie udalo sie polaczyc z GitHub Releases API."),
+    }
+}
+
+fn sys_upgrade() {
+    let Some((latest, vos_url, mur_url)) = fetch_latest_release_info() else {
+        eprintln!("[MUR Error]: Brak polaczenia z GitHub Releases.");
+        return;
+    };
+    if vos_url.is_empty() || mur_url.is_empty() {
+        eprintln!("[MUR OTA]: Wydanie {} nie zawiera samodzielnych binarek vos/mur (wymaga nowego ISO).", latest);
+        return;
+    }
+    println!("[MUR OTA] Aktualizacja komponentow bazowych do {}...", latest);
+    if download_file(&vos_url, "/bin/vos.new") && download_file(&mur_url, "/usr/bin/mur.new") {
+        let _ = fs::set_permissions("/bin/vos.new", fs::Permissions::from_mode(0o755));
+        let _ = fs::set_permissions("/usr/bin/mur.new", fs::Permissions::from_mode(0o755));
+        let _ = fs::rename("/bin/vos.new", "/bin/vos");
+        let _ = fs::copy("/bin/vos", "/init");
+        let _ = fs::rename("/usr/bin/mur.new", "/usr/bin/mur");
+        let _ = fs::write(VERSION_FILE, format!("{}\n", latest));
+        println!("\x1B[1;32m[SUKCES]\x1B[0m Zaktualizowano system do {}! Wpisz sys.reboot().", latest);
+    } else {
+        eprintln!("[MUR Error]: Nie udalo sie pobrac plikow aktualizacji.");
+    }
 }
