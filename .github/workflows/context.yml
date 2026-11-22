@@ -1,50 +1,33 @@
 name: Update AI Context Snapshot
-
 on:
   push:
     branches: [ main ]
-    paths-ignore:
-      - 'CONTEXT.md'
+    paths-ignore: [ "CONTEXT.md" ]
   issues:
     types: [ opened, closed, reopened ]
-
 permissions:
   contents: write
   issues: read
-
 jobs:
   build-context:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Generate CONTEXT.md
         env:
-          GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cat << 'HEADER' > CONTEXT.md
-          # MacroMag OS — Live Project Context
-          *Auto-generated snapshot of repository structure, active issues, and core source code.*
-
-          ## 1. Repository File Tree
-          ```text
-          HEADER
-          find . -maxdepth 4 -not -path '*/.*' -not -path './target*' -not -path './build_work*' | sort >> CONTEXT.md
-          echo '```' >> CONTEXT.md
-
-          echo -e "\n## 2. Open GitHub Issues (Roadmap)" >> CONTEXT.md
-          gh issue list --state open --limit 30 --json number,title --jq '.[] | "- **#\(.number)**: \(.title)"' >> CONTEXT.md || true
-
-          echo -e "\n## 3. Core Source Code Snapshot" >> CONTEXT.md
-          for file in Cargo.toml buildiso.sh userspace/vos/src/main.rs userspace/vos/src/vos_builtins.rs userspace/mur/src/main.rs; do
-            if [ -f "$file" ]; then
-              echo -e "\n### File: \`$file\`" >> CONTEXT.md
-              echo '```rust' >> CONTEXT.md
-              cat "\$file" >> CONTEXT.md
-              echo -e '\n```' >> CONTEXT.md
-            fi
+          echo "# MacroMag OS — Live Project Context" > CONTEXT.md
+          echo "## 1. Repository Files" >> CONTEXT.md
+          find . -maxdepth 4 -not -path "*/.*" -not -path "./target*" | sort >> CONTEXT.md
+          echo "## 2. Open Issues" >> CONTEXT.md
+          gh issue list --state open --limit 30 --json number,title --jq ".[] | "- #\(.number): \(.title)"" >> CONTEXT.md || true
+          for f in Cargo.toml buildiso.sh userspace/vos/src/main.rs userspace/vos/src/vos_builtins.rs userspace/mur/src/main.rs; do
+            if [ -f "$f" ]; then echo -e "
+### $f
+\`\`\`rust" >> CONTEXT.md; cat "$f" >> CONTEXT.md; echo -e "
+\`\`\`" >> CONTEXT.md; fi
           done
-
       - name: Commit CONTEXT.md
         run: |
           git config user.name "github-actions[bot]"
