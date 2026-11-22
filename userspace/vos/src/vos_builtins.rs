@@ -1,7 +1,8 @@
 use crate::vos_core::{VosObject, VosValue};
 use std::collections::HashMap;
 use std::fs;
-use std::process::Command;
+use std::io::Write;
+use std::process::{Command, Stdio};
 
 const SYS_REBOOT_X86_64: i64 = 169;
 const LINUX_REBOOT_MAGIC1: u64 = 0xfee1dead;
@@ -18,14 +19,24 @@ pub fn execute_builtin(module: &str, action: &str, args: &[VosValue]) -> Result<
         ("sys", "ps") => Ok(sys_ps()),
         ("sys", "mem") => Ok(sys_mem()),
         ("sys", "uptime") => Ok(sys_uptime()),
+        ("sys", "install") => {
+            let Some(VosValue::Text(disk)) = args.first() else {
+                return Err("sys.install() wymaga sciezki dysku, np. sys.install(\"/dev/sda\")".into());
+            };
+            sys_install(disk)
+        }
         ("sys", "reboot") => {
             println!("Restartowanie MacroMag OS...");
-            unsafe { syscall(SYS_REBOOT_X86_64, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART, 0u64); }
+            unsafe {
+                syscall(SYS_REBOOT_X86_64, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART, 0u64);
+            }
             Ok(Vec::new())
         }
         ("sys", "poweroff") => {
             println!("Wylaczanie zasilania...");
-            unsafe { syscall(SYS_REBOOT_X86_64, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_POWER_OFF, 0u64); }
+            unsafe {
+                syscall(SYS_REBOOT_X86_64, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_POWER_OFF, 0u64);
+            }
             Ok(Vec::new())
         }
         ("fs", "ls") => {
@@ -68,6 +79,87 @@ pub fn execute_builtin(module: &str, action: &str, args: &[VosValue]) -> Result<
     }
 }
 
+fn sys_install(disk: &str) -> Result<Vec<VosObject>, String> {
+    if !disk.starts_with("/dev/") {
+        return Err("Nieprawidlowa sciezka urzadzenia (oczekiwano np. /dev/sda)".into());
+    }
+    if fs::metadata(disk).is_err() {
+        return Err(format!("Nie znaleziono dysku '{}' w /dev", disk));
+    }
+
+    println!("\x1B[1;33m[INSTALLER]\x1B[0m Partycjonowanie dysku {}...", disk);
+    let part_script = "label: dos\n,,L,*\n";
+    let mut sfdisk = Command::new("sfdisk")
+        .arg(disk)
+        .stdin(Stdio::piped())
+        .spawn()
+        .map_err(|_| "Brak narzedzia 'sfdisk' w obrazie ISO".to_string())?;
+
+    if let Some(mut stdin) = sfdisk.stdin.take() {
+        let _ = stdin.write_all(part_script.as_bytes());
+    }
+    let status = sfdisk.wait().map_err(|e| format!("Blad partycjonowania: {}", e))?;
+    if !status.success() {
+        return Err("Partycjonowanie dysku nie powiodlo sie".into());
+    }
+
+    let part = if disk.contains("nvme") {
+        format!("{}p1", disk)
+    } else {
+        format!("{}1", disk)
+    };
+
+    println!("\x1B[1;33m[INSTALLER]\x1B[0m Formatowanie {} (ext4)...", part);
+    let mkfs = Command::new("mkfs.ext4")
+        .args(["-F", "-L", "MACROMAG_ROOT", &part])
+        .status()
+        .map_err(|_| "Brak narzedzia 'mkfs.ext4' w obrazie ISO".to_string())?;
+    if !mkfs.success() {
+        return Err("Formatowanie ext4 nie powiodlo sie".into());
+    }
+
+    let _ = fs::create_dir_all("/mnt/target");
+    let mnt = Command::new("/bin/mount")
+        .args([&part, "/mnt/target"])
+        .status()
+        .map_err(|e| format!("Blad montowania {}: {}", part, e))?;
+    if !mnt.success() {
+        return Err("Nie udalo sie zamontowac partycji docelowej".into());
+    }
+
+    println!("\x1B[1;33m[INSTALLER]\x1B[0m Kopiowanie plikow MacroMag OS na dysk...");
+    for dir in ["boot/grub", "usr/bin", "etc", "var/cache/mur", "proc", "sys", "dev", "tmp"] {
+        let _ = fs::create_dir_all(format!("/mnt/target/{}", dir));
+    }
+
+    let _ = fs::copy("/init", "/mnt/target/init");
+    let _ = fs::copy("/usr/bin/mur", "/mnt/target/usr/bin/mur");
+    if fs::metadata("/boot/vmlinuz").is_ok() {
+        let _ = fs::copy("/boot/vmlinuz", "/mnt/target/boot/vmlinuz");
+    }
+    if fs::metadata("/boot/initramfs.img").is_ok() {
+        let _ = fs::copy("/boot/initramfs.img", "/mnt/target/boot/initramfs.img");
+    }
+
+    let grub_cfg = "set timeout=1\nset default=0\n\nmenuentry \"MacroMag OS (Installed)\" {\n    linux /boot/vmlinuz root=/dev/sda1 console=tty0 quiet\n    initrd /boot/initramfs.img\n}\n";
+    let _ = fs::write("/mnt/target/boot/grub/grub.cfg", grub_cfg);
+
+    println!("\x1B[1;33m[INSTALLER]\x1B[0m Instalacja bootloadera GRUB na {}...", disk);
+    let grub_ok = Command::new("grub-install")
+        .args(["--boot-directory=/mnt/target/boot", disk])
+        .status()
+        .map(|s| s.success())
+        .unwrap_or(false);
+
+    let mut res = HashMap::new();
+    res.insert("target_disk".into(), VosValue::Text(disk.to_string()));
+    res.insert("partition".into(), VosValue::Text(part));
+    res.insert("grub_installed".into(), VosValue::Bool(grub_ok));
+    res.insert("status".into(), VosValue::Text("DONE - Wyjmij pendrive i wpisz sys.reboot()".into()));
+
+    Ok(vec![res])
+}
+
 fn sys_ps() -> Vec<VosObject> {
     let mut list = Vec::new();
     let Ok(entries) = fs::read_dir("/proc") else { return list };
@@ -102,9 +194,9 @@ fn sys_mem() -> Vec<VosObject> {
         for line in content.lines().take(5) {
             let parts: Vec<&str> = line.split_whitespace().collect();
             if parts.len() >= 2 {
-                if let Ok(kb) = parts[1].parse::<u64>() {
+                if let Ok(kb) = parts.parse::<u64>() {
                     let mut obj = HashMap::new();
-                    obj.insert("metric".into(), VosValue::Text(parts[0].trim_end_matches(':').into()));
+                    obj.insert("metric".into(), VosValue::Text(parts.trim_end_matches(':').into()));
                     obj.insert("size".into(), VosValue::Bytes(kb * 1024));
                     list.push(obj);
                 }
@@ -153,15 +245,15 @@ fn fs_cat(path: &str) -> Result<Vec<VosObject>, String> {
 fn run_external(program: &str, args: &[&str]) -> Result<Vec<VosObject>, String> {
     let output = Command::new(program).args(args).output()
         .map_err(|e| format!("Blad uruchomienia '{}': {}", program, e))?;
-    let stdout = String::from_utf8_lossy(&output.stdout);
-    let stderr = String::from_utf8_lossy(&output.stderr);
-    if !output.status.success() && !stderr.is_empty() {
-        return Err(stderr.trim().to_string());
-    }
-    Ok(stdout.lines().enumerate().map(|(i, line)| {
-        let mut obj = HashMap::new();
-        obj.insert("line".into(), VosValue::Int((i + 1) as i64));
-        obj.insert("output".into(), VosValue::Text(line.to_string()));
-        obj
-    }).collect())
+let stdout = String::from_utf8_lossy(&output.stdout);
+let stderr = String::from_utf8_lossy(&output.stderr);
+if !output.status.success() && !stderr.is_empty() {
+return Err(stderr.trim().to_string());
+}
+Ok(stdout.lines().enumerate().map(|(i, line)| {
+let mut obj = HashMap::new();
+obj.insert("line".into(), VosValue::Int((i + 1) as i64));
+obj.insert("output".into(), VosValue::Text(line.to_string()));
+obj
+}).collect())
 }
