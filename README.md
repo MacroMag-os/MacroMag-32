@@ -79,11 +79,9 @@ Instead of reinventing hardware drivers from scratch, MacroMag leverages a strip
 4. **`#33` [INSTALLER] Swap & `zram` Support:** Enable compressed `zram` RAM at boot and create `/swapfile` during `sys.install()` for 512 MB–2 GB legacy hardware.
 5. **`#34` [SECURITY] Multi-User Login (`userspace/login`):** Integrate password authentication against `/etc/macromag_users` at boot and add `user.add()` / `user.passwd()` built-ins.
 6. **`#37` [MUR] Dependency Resolution & Updates:** Support `depends=pkg1,pkg2` in `mur.pkg`, track installed versions in `/var/lib/mur/installed.db`, and implement `mur upgrade`.
-7. **`#38` [SYSTEM] `musl` Dynamic Linker & Shared Libraries:** Bundle `ld-musl-x86_64.so.1`, `libssl`, `libcrypto`, and `zlib` to run standard dynamically linked Linux binaries.
-8. **`#39` [NETWORK] Wi-Fi & Firewall:** Add `wpa_supplicant` + wireless firmware, `net.wifi()` VOS commands, static IP configuration, and `nftables`/`iptables` rules.
-9. **`#40` [SHELL] Line Editing, History & Tab Completion:** Replace raw `stdin().read_line()` with `rustyline` or `termios` raw mode for Up/Down arrow history (`~/.vos_history`) and `Tab` completion.
-10. **`#41` [KERNEL] Custom Linux Kernel `.config`:** Add optimized `defconfig` in `kernel/` with built-in `NVMe`, `AHCI`, `USB`, `ext4`, `vfat`, and NIC/Wi-Fi drivers.
-11. **`#42` [RELEASE] Automated Release Artifacts:** Ensure tagged releases automatically attach verified `MacroMag-x86_64.iso` images.
+7. **`#39` [NETWORK] Wi-Fi & Firewall:** Add `wpa_supplicant` + wireless firmware, `net.wifi()` VOS commands, static IP configuration, and `nftables`/`iptables` rules.
+8.**`#40` [SHELL] Line Editing, History & Tab Completion:** Replace raw `stdin().read_line()` with `rustyline` or `termios` raw mode for Up/Down arrow history (`~/.vos_history`) and `Tab` completion.
+
 
 ## 4. Key Repository Files
 - `Cargo.toml` — Workspace root (`userspace/vos`, `userspace/mur`)
@@ -161,8 +159,8 @@ We are currently in the **Minimalist Value Product (MVP — Bare-Metal x86_64)**
 
 - [x] **Phase 1: Architectural Concept & Python Prototype** (`powershell32.py`, basic assembler & simulation scripts).
 - [X] **Phase 2: Create MUR (MacroMag User Repository)** — Write The Arch inspired user Repository with tools build in system MacroMag **Rust / C** for deterministic performance.
-- [ ] **Phase 3: Minimalist Value Product (in progress)** — Linux Based system graphic with new "linux-os" for all and enterprise model
-- [ ] **Phase 4: Get full working system (.iso) file** — With MUR connect, working commands, VOS. 
+- [X] **Phase 3: Minimalist Value Product** — Linux Based system graphic with new "linux-os" for all and enterprise model
+- [ ] **Phase 4: Get full working system** — With MUR connect, working commands, VOS. 
 - [ ] **Phase 5: Get working GUI added to system** - Graphical interface and most powerful tools with VOS
 ---
 
