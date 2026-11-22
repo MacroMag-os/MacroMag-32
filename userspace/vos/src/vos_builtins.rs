@@ -194,9 +194,9 @@ fn sys_mem() -> Vec<VosObject> {
         for line in content.lines().take(5) {
             let parts: Vec<&str> = line.split_whitespace().collect();
             if parts.len() >= 2 {
-                if let Ok(kb) = parts.parse::<u64>() {
+                if let Some(Ok(kb)) = parts.get(1).map(|s| s.parse::<u64>()) {
                     let mut obj = HashMap::new();
-                    obj.insert("metric".into(), VosValue::Text(parts.trim_end_matches(':').into()));
+                    obj.insert("metric".into(), VosValue::Text(parts.first().unwrap_or(&"").trim_end_matches(':').into()));
                     obj.insert("size".into(), VosValue::Bytes(kb * 1024));
                     list.push(obj);
                 }
