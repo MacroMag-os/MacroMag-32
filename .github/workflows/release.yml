@@ -18,22 +18,17 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential bc bison flex libssl-dev libelf-dev grub-pc-bin grub-efi-amd64-bin xorriso mtools dosfstools musl-tools wget cpio zip
+          sudo apt-get install -y grub-pc-bin grub-efi-amd64-bin xorriso mtools dosfstools musl-tools wget cpio zip squashfs-tools
 
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: x86_64-unknown-linux-musl
 
-      - name: Compile Full Linux Kernel
+      - name: Fetch Full Prebuilt Linux LTS Kernel & Modules
         run: |
-          mkdir -p /tmp/kbuild && cd /tmp/kbuild
-          wget -q https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.6.63.tar.xz
-          tar -xf linux-6.6.63.tar.xz && cd linux-6.6.63
-          make x86_64_defconfig
-          cat "$GITHUB_WORKSPACE/kernel/defconfig" >> .config
-          make olddefconfig
-          make -j$(nproc) bzImage
-          cp arch/x86/boot/bzImage "$GITHUB_WORKSPACE/kernel/vmlinuz"
+          mkdir -p "$GITHUB_WORKSPACE/kernel"
+          wget -q "https://dl-cdn.alpinelinux.org/alpine/v3.20/releases/x86_64/netboot/vmlinuz-lts" -O "$GITHUB_WORKSPACE/kernel/vmlinuz"
+          wget -q "https://dl-cdn.alpinelinux.org/alpine/v3.20/releases/x86_64/netboot/modloop-lts" -O "$GITHUB_WORKSPACE/kernel/modloop-lts"
 
       - name: Build Full MacroMag ISO
         run: chmod +x buildiso.sh && ./buildiso.sh
@@ -46,3 +41,4 @@ jobs:
             MacroMag-x86_64-ISO.zip
             MacroMag-x86_64.iso
           generate_release_notes: true
+
