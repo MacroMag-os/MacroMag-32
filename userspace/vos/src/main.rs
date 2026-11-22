@@ -4,6 +4,7 @@ mod vos_executor;
 mod vos_parser;
 
 use std::collections::BTreeSet;
+use std::env;
 use std::ffi::CString;
 use std::fs;
 use std::io::{self, Write};
@@ -12,9 +13,12 @@ use vos_core::{VosObject, VosValue};
 use vos_parser::{tokenize, Parser};
 
 const SYS_MOUNT_X86_64: i64 = 165;
+const SIGINT: i32 = 2;
+const SIG_IGN: usize = 1;
 
 extern "C" {
     fn syscall(number: i64, ...) -> i64;
+    fn signal(sig: i32, handler: usize) -> usize;
 }
 
 fn mount_kernel_fs(source: &str, target: &str, fstype: &str) {
@@ -35,24 +39,39 @@ fn mount_kernel_fs(source: &str, target: &str, fstype: &str) {
     }
 }
 
-fn init_hardware_environment() {
+fn init_system_environment() {
+    // 1. Ignorujemy Ctrl+C (SIGINT) w PID 1, zeby przerwanie programu nie powodowalo Kernel Panic
+    unsafe {
+        signal(SIGINT, SIG_IGN);
+    }
+
+    // 2. Montujemy wirtualne systemy plikow jadra
     mount_kernel_fs("devtmpfs", "/dev", "devtmpfs");
     mount_kernel_fs("proc", "/proc", "proc");
     mount_kernel_fs("sysfs", "/sys", "sysfs");
     mount_kernel_fs("tmpfs", "/tmp", "tmpfs");
-}
 
-/// Podnosi interfejsy sieciowe i pobiera IP przez DHCP w tle (dla komendy mur.sync())
-fn init_network() {
+    // 3. Ustawiamy standardowe zmienne srodowiskowe jak w Ubuntu / Termux
+    env::set_var("PATH", "/bin:/sbin:/usr/bin:/usr/sbin");
+    env::set_var("HOME", "/root");
+    env::set_var("TERM", "linux");
+    env::set_var("USER", "root");
+    env::set_var("HOSTNAME", "macromag");
+
+    let _ = fs::create_dir_all("/root");
+    let _ = fs::create_dir_all("/etc");
+    let _ = env::set_current_dir("/root");
+
+    // 4. Konfigurujemy DNS (Cloudflare + Google), zeby dzialal internet po nazwach domen
+    let _ = fs::write("/etc/resolv.conf", "nameserver 1.1.1.1\nnameserver 8.8.8.8\n");
+
+    // 5. Podnosimy karty sieciowe i DHCP w tle
     let _ = Command::new("/bin/ip").args(["link", "set", "lo", "up"]).status();
-
     if let Ok(entries) = fs::read_dir("/sys/class/net") {
         for entry in entries.flatten() {
             let iface = entry.file_name().to_string_lossy().to_string();
             if iface != "lo" {
-                let _ = Command::new("/bin/ip")
-                    .args(["link", "set", &iface, "up"])
-                    .status();
+                let _ = Command::new("/bin/ip").args(["link", "set", &iface, "up"]).status();
                 let _ = Command::new("/bin/udhcpc")
                     .args(["-i", &iface, "-b", "-q"])
                     .stdout(Stdio::null())
@@ -64,18 +83,21 @@ fn init_network() {
 }
 
 fn main() {
-    init_hardware_environment();
-    init_network();
+    init_system_environment();
 
     print!("\x1B[2J\x1B[1;1H");
-    println!("\x1B[1;36m==================================================\x1B[0m");
-    println!("\x1B[1;37m   MacroMag OS x86-64 | Virtualized Object Shell  \x1B[0m");
-    println!("\x1B[0;36m   Zero Telemetry | Pure Rust/C Bare-Metal Linux  \x1B[0m");
-    println!("\x1B[1;36m==================================================\x1B[0m");
-    println!("Wpisz \x1B[1;33mhelp\x1B[0m aby zobaczyc komendy.\n");
+    println!("\x1B[1;36mMacroMag OS 0.1 LTS (x86_64) tty1\x1B[0m");
+    println!("Kernel: Linux | Runtime: VOS + POSIX Userspace | Zero Telemetry\n");
+    println!("Wpisz standardowa komende Linuxa (np. ls, fastfetch, mur) lub potok VOS (np. sys.ps()).\n");
 
     loop {
-        print!("\x1B[1;32mvos>\x1B[0m ");
+        // Znak zachety jak w Ubuntu / Termux: root@macromag:/sciezka#
+        let cwd = env::current_dir()
+            .map(|p| p.display().to_string())
+            .unwrap_or_else(|_| "/".into());
+        let display_cwd = if cwd == "/root" { "~".to_string() } else { cwd };
+
+        print!("\x1B[1;32mroot@macromag\x1B[0m:\x1B[1;34m{}\x1B[0m# ", display_cwd);
         io::stdout().flush().unwrap();
 
         let mut input = String::new();
@@ -88,45 +110,69 @@ fn main() {
             continue;
         }
 
+        // 1. Wbudowane komendy powloki (cd, clear, exit, help)
         if trimmed == "clear" {
             print!("\x1B[2J\x1B[1;1H");
             continue;
         }
-
+        if trimmed == "cd" || trimmed.starts_with("cd ") {
+            let target = trimmed.strip_prefix("cd").unwrap().trim();
+            let dest = if target.is_empty() || target == "~" { "/root" } else { target };
+            if let Err(e) = env::set_current_dir(dest) {
+                println!("cd: {}: {}", dest, e);
+            }
+            continue;
+        }
         if trimmed == "help" {
-            println!("\x1B[1;36mDostepne komendy VOS (x86-64):\x1B[0m");
-            println!("  sys.ps()                - lista procesow z /proc");
-            println!("  sys.mem()               - zuzycie pamieci RAM");
-            println!("  sys.uptime()            - czas dzialania systemu");
-            println!("  fs.ls(\"/dev\")           - wykryte urzadzenia");
-            println!("  fs.cat(\"/proc/cpuinfo\") - informacje o procesorze");
-            println!("  mur.sync() / mur.list() - menedzer pakietow MUR");
-            println!("  sys.reboot()            - restart komputera");
-            println!("  sys.poweroff()          - wylaczenie zasilania");
+            println!("Srodowisko MacroMag OS obsluguje dwa tryby pracy:");
+            println!("  1. Standardowe komendy Linuxa: ls, cd, cat, mkdir, rm, ip, fastfetch, mur");
+            println!("  2. Potoki obiektowe VOS:      sys.ps() | where memory > 10MB | select pid, name");
+            println!("  3. Zarzadzanie systemem:      sys.install(\"/dev/sda\"), sys.reboot(), sys.poweroff()");
             continue;
         }
 
-        match tokenize(trimmed) {
-            Ok(tokens) => {
-                let mut parser = Parser::new(tokens);
-                match parser.parse_pipeline() {
-                    Ok(pipeline) => {
-                        match vos_builtins::execute_builtin(
-                            &pipeline.source.module,
-                            &pipeline.source.action,
-                            &pipeline.source.args,
-                        ) {
-                            Ok(data) => {
-                                let results = pipeline.execute(data);
-                                print_table(&results);
+        // 2. Rozpoznanie: czy to potok obiektowy VOS (ma nawiasy '()' lub potok '|'), czy zwykla komenda Linuxa?
+        let is_vos_syntax = trimmed.contains('(') || trimmed.contains('|');
+
+        if is_vos_syntax {
+            match tokenize(trimmed) {
+                Ok(tokens) => {
+                    let mut parser = Parser::new(tokens);
+                    match parser.parse_pipeline() {
+                        Ok(pipeline) => {
+                            match vos_builtins::execute_builtin(
+                                &pipeline.source.module,
+                                &pipeline.source.action,
+                                &pipeline.source.args,
+                            ) {
+                                Ok(data) => {
+                                    let results = pipeline.execute(data);
+                                    print_table(&results);
+                                }
+                                Err(e) => println!("\x1B[1;31m[VOS Error]:\x1B[0m {}", e),
                             }
-                            Err(e) => println!("\x1B[1;31m[VOS Error]:\x1B[0m {}", e),
                         }
+                        Err(e) => println!("\x1B[1;31m[Blad skladni VOS]:\x1B[0m {}", e),
                     }
-                    Err(e) => println!("\x1B[1;31m[Blad skladni]:\x1B[0m {}", e),
+                }
+                Err(e) => println!("\x1B[1;31m[Blad leksera]:\x1B[0m {}", e),
+            }
+        } else {
+            // 3. Uruchomienie standardowego programu Linuxa w pelnym trybie interaktywnym (jak Bash)
+            let parts: Vec<&str> = trimmed.split_whitespace().collect();
+            let prog = parts;
+            let args = &parts[1..];
+
+            match Command::new(prog).args(args).status() {
+                Ok(_) => {}
+                Err(e) => {
+                    if e.kind() == io::ErrorKind::NotFound {
+                        println!("{}: command not found", prog);
+                    } else {
+                        println!("{}: {}", prog, e);
+                    }
                 }
             }
-            Err(e) => println!("\x1B[1;31m[Blad leksera]:\x1B[0m {}", e),
         }
     }
 }
@@ -151,7 +197,6 @@ fn format_value(val: &VosValue) -> String {
     }
 }
 
-/// Renderuje obiekty VosObject w postaci czytelnej, kolorowej tabeli z wyrownanymi kolumnami
 fn print_table(rows: &[VosObject]) {
     if rows.is_empty() {
         println!("\x1B[0;90m(brak wynikow)\x1B[0m");
@@ -183,7 +228,6 @@ fn print_table(rows: &[VosObject]) {
         })
         .collect();
 
-    // Naglowek tabeli
     let header: Vec<String> = cols
         .iter()
         .enumerate()
@@ -191,11 +235,9 @@ fn print_table(rows: &[VosObject]) {
         .collect();
     println!("  {}", header.join(" | "));
 
-    // Linia oddzielajaca
     let sep: Vec<String> = widths.iter().map(|&w| "-".repeat(w)).collect();
     println!("  \x1B[0;90m{}\x1B[0m", sep.join("-+-"));
 
-    // Wiersze danych
     for r in formatted_rows {
         let line: Vec<String> = r
             .iter()
