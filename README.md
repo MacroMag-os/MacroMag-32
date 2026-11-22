@@ -30,7 +30,7 @@ Modern computing is trapped in a cycle of planned obsolescence. Mainstream opera
 **MacroMag is an experimental Linux Distribution architecture designed for, modularity, and zero-telemetry online execution.** 
    
 ### Pre-built Prototype (ISO & Binaries)
-Don't want to compile from source? Download pre-built prototype images (`MacroMag-32.iso`) and test utilities directly from our **[GitHub Releases](https://github.com/MacroMag-os/MacroMag-32)** page.
+Don't want to compile from source? Download pre-built prototype images (`MacroMag-x86_64.iso`) and test utilities directly from our **[GitHub Releases](https://github.com/MacroMag-os/MacroMag-32)** page.
 
 ## 2. Pure Linux Kernel Core (`x86_64` & `RISC-V`)
 
@@ -157,7 +157,7 @@ spawn --isolated --image:web_server -> Core.VM
 
 ## 🛠️ Current Status & Roadmap
 
-We are currently in the **Proof-of-Concept (PoC)** phase. Honest engineering comes first:
+We are currently in the **Minimalist Value Product (MVP — Bare-Metal x86_64)** phase. Honest engineering comes first:
 
 - [x] **Phase 1: Architectural Concept & Python Prototype** (`powershell32.py`, basic assembler & simulation scripts).
 - [X] **Phase 2: Create MUR (MacroMag User Repository)** — Write The Arch inspired user Repository with tools build in system MacroMag **Rust / C** for deterministic performance.
