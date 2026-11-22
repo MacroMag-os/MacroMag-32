@@ -15,10 +15,19 @@ use vos_parser::{tokenize, Parser};
 const SYS_MOUNT_X86_64: i64 = 165;
 const SIGINT: i32 = 2;
 const SIG_IGN: usize = 1;
+const WNOHANG: i32 = 1;
 
 extern "C" {
     fn syscall(number: i64, ...) -> i64;
     fn signal(sig: i32, handler: usize) -> usize;
+    fn waitpid(pid: i32, status: *mut i32, options: i32) -> i32;
+}
+
+fn reap_zombie_processes() {
+    let mut status: i32 = 0;
+    unsafe {
+        while waitpid(-1, &mut status, WNOHANG) > 0 {}
+    }
 }
 
 fn mount_kernel_fs(source: &str, target: &str, fstype: &str) {
@@ -45,13 +54,14 @@ fn init_system_environment() {
         signal(SIGINT, SIG_IGN);
     }
 
-    // 2. Montujemy wirtualne systemy plikow jadra
+    // 2. Montujemy wirtualne systemy plikow jadra (w tym /dev/pts dla SSH i terminali)
     mount_kernel_fs("devtmpfs", "/dev", "devtmpfs");
+    mount_kernel_fs("devpts", "/dev/pts", "devpts");
     mount_kernel_fs("proc", "/proc", "proc");
     mount_kernel_fs("sysfs", "/sys", "sysfs");
     mount_kernel_fs("tmpfs", "/tmp", "tmpfs");
 
-    // 3. Ustawiamy standardowe zmienne srodowiskowe jak w Ubuntu / Termux
+    // 3. Ustawiamy standardowe zmienne srodowiskowe jak w Ubuntu Server
     env::set_var("PATH", "/bin:/sbin:/usr/bin:/usr/sbin");
     env::set_var("HOME", "/root");
     env::set_var("TERM", "linux");
@@ -60,12 +70,21 @@ fn init_system_environment() {
 
     let _ = fs::create_dir_all("/root");
     let _ = fs::create_dir_all("/etc");
+    let _ = fs::create_dir_all("/var/log");
     let _ = env::set_current_dir("/root");
 
-    // 4. Konfigurujemy DNS (Cloudflare + Google), zeby dzialal internet po nazwach domen
+    // 4. Uruchamiamy logowanie jadra i systemu (syslogd / klogd)
+    if fs::metadata("/bin/syslogd").is_ok() {
+        let _ = Command::new("/bin/syslogd").spawn();
+    }
+    if fs::metadata("/bin/klogd").is_ok() {
+        let _ = Command::new("/bin/klogd").spawn();
+    }
+
+    // 5. Konfigurujemy DNS (Cloudflare + Google)
     let _ = fs::write("/etc/resolv.conf", "nameserver 1.1.1.1\nnameserver 8.8.8.8\n");
 
-    // 5. Podnosimy karty sieciowe i DHCP w tle
+    // 6. Podnosimy karty sieciowe i DHCP w tle
     let _ = Command::new("/bin/ip").args(["link", "set", "lo", "up"]).status();
     if let Ok(entries) = fs::read_dir("/sys/class/net") {
         for entry in entries.flatten() {
@@ -88,10 +107,11 @@ fn main() {
     print!("\x1B[2J\x1B[1;1H");
     println!("\x1B[1;36mMacroMag OS 0.1 LTS (x86_64) tty1\x1B[0m");
     println!("Kernel: Linux | Runtime: VOS + POSIX Userspace | Zero Telemetry\n");
-    println!("Wpisz standardowa komende Linuxa (np. ls, fastfetch, mur) lub potok VOS (np. sys.ps()).\n");
+    println!("Wpisz komende Linuxa (np. ls, dmesg | grep usb, mur) lub potok VOS (np. sys.ps()).\n");
 
     loop {
-        // Znak zachety jak w Ubuntu / Termux: root@macromag:/sciezka#
+        reap_zombie_processes();
+
         let cwd = env::current_dir()
             .map(|p| p.display().to_string())
             .unwrap_or_else(|_| "/".into());
@@ -110,7 +130,7 @@ fn main() {
             continue;
         }
 
-        // 1. Wbudowane komendy powloki (cd, clear, exit, help)
+        // 1. Wbudowane komendy powloki
         if trimmed == "clear" {
             print!("\x1B[2J\x1B[1;1H");
             continue;
@@ -125,14 +145,15 @@ fn main() {
         }
         if trimmed == "help" {
             println!("Srodowisko MacroMag OS obsluguje dwa tryby pracy:");
-            println!("  1. Standardowe komendy Linuxa: ls, cd, cat, mkdir, rm, ip, fastfetch, mur");
+            println!("  1. Standardowe komendy Linuxa: ls, cd, cat, dmesg | grep ..., mur");
             println!("  2. Potoki obiektowe VOS:      sys.ps() | where memory > 10MB | select pid, name");
             println!("  3. Zarzadzanie systemem:      sys.install(\"/dev/sda\"), sys.reboot(), sys.poweroff()");
             continue;
         }
 
-        // 2. Rozpoznanie: czy to potok obiektowy VOS (ma nawiasy '()' lub potok '|'), czy zwykla komenda Linuxa?
-        let is_vos_syntax = trimmed.contains('(') || trimmed.contains('|');
+        // 2. Rozpoznanie: potok VOS (ma '(' przed pierwszym '|') vs klasyczna komenda/potok POSIX
+        let first_segment = trimmed.split('|').next().unwrap_or("");
+        let is_vos_syntax = first_segment.contains('(');
 
         if is_vos_syntax {
             match tokenize(trimmed) {
@@ -157,8 +178,11 @@ fn main() {
                 }
                 Err(e) => println!("\x1B[1;31m[Blad leksera]:\x1B[0m {}", e),
             }
+        } else if trimmed.contains('|') || trimmed.contains('>') || trimmed.contains('<') || trimmed.ends_with('&') || trimmed.contains(';') {
+            // Klasyczne potoki uniksowe, przekierowania i zadania w tle delegujemy do /bin/sh
+            let _ = Command::new("/bin/sh").args(["-c", trimmed]).status();
         } else {
-            // 3. Uruchomienie standardowego programu Linuxa w pelnym trybie interaktywnym (jak Bash)
+            // Bezposrednie uruchomienie pojedynczego programu
             let parts: Vec<&str> = trimmed.split_whitespace().collect();
             let Some(&prog) = parts.first() else { continue; };
             let args = &parts[1..];
@@ -231,20 +255,19 @@ fn print_table(rows: &[VosObject]) {
     let header: Vec<String> = cols
         .iter()
         .enumerate()
-        .map(|(i, c)| format!("\x1B[1;36m{:<width$}\x1B[0m", c.to_uppercase(), width = widths[i]))
+        .map(|(i, c)| format!("\x1B[1;33m{:<width$}\x1B[0m", c.to_uppercase(), width = widths[i]))
         .collect();
-    println!("  {}", header.join(" | "));
+    println!("{}", header.join(" | "));
 
     let sep: Vec<String> = widths.iter().map(|&w| "-".repeat(w)).collect();
-    println!("  \x1B[0;90m{}\x1B[0m", sep.join("-+-"));
+    println!("{}", sep.join("-+-"));
 
-    for r in formatted_rows {
-        let line: Vec<String> = r
+    for row in formatted_rows {
+        let line: Vec<String> = row
             .iter()
             .enumerate()
             .map(|(i, cell)| format!("{:<width$}", cell, width = widths[i]))
             .collect();
-        println!("  {}", line.join(" | "));
+        println!("{}", line.join(" | "));
     }
-    println!();
 }
