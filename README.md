@@ -159,7 +159,7 @@ visit Repository: **https://github.com/MacroMag-os/mur**
 We want to be the most powerful But simple linux Distribution with good GUI and a lot of Functional useful system data
 
 ## 🦊 GitLab Copy
-**(https://gitlab.com/maldyrek/macromag-32)**
+[GitLab]**(https://gitlab.com/maldyrek/macro-mag-32)**
 
 ## 🤝 Project Leadership & Team
 
