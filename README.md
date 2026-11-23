@@ -39,9 +39,13 @@ Instead of reinventing hardware drivers from scratch, MacroMag leverages a strip
 * **Zero Telemetry, Full Hardware Support:** No background cloud polling, no legacy GNU userland clutter, and immediate compatibility with standard PCs, legacy laptops (Anti E-Waste), and open **RISC-V** boards.
 * **VOS Native Execution:** The kernel boots directly into our **Rust/C** runtime and the Virtualized Object Shell (**VOS**), bypassing traditional Bash/POSIX bottlenecks while keeping strict process sandboxing.
 
-### Enterprise Cloud Architecture (Opt-In): While the Community edition operates strictly air-gapped with zero telemetry, MacroMag Enterprise introduces an optional, deterministic cloud control plane. Leveraging VOS typed object pipelines over encrypted channels, organizations can orchestrate fleets of x86_64 and RISC-V nodes, deploy atomic updates ("Online But Always Updating"), and manage hardware modules remotely—available both as a managed cloud service and a self-hosted on-premise solution.
+## Project Vision & Philosophy
 
-## I want to create a Linux distro, but not a classic one... I want to create something that doesn't exist yet: a free Open version (on which the Enterprise version will also be based), and Enterprise is a paid add-on for Open and my way of making money (but so as not to fall into Red Hat's clutches, this Enterprise system will be cheaper, so I will sell it at a bargain price to smaller IT companies so they buy it). The kernel (Linux) is available, so I don't have to create it, but I want to build such a deep interface that it looks 'not like Linux' and has the style of Apple macOS  but done my way, with my famous logo MM > MacroMag. Now, I know it's damn hard, but complicating a non-existent kernel on my own would be impossible, so I'll use the Linux
+MacroMag OS was born from a simple goal: **to build a modern, intuitive operating system on top of the battle-tested Linux kernel, without inheriting the traditional Linux UX clutter.**
+
+- **Leveraging the Linux Kernel, Reinventing the Experience:** Writing a hardware-compatible kernel from scratch is counterproductive when Linux already offers world-class hardware support. Instead, MacroMag uses a stripped-down Linux kernel purely as a hardware abstraction layer, focusing all engineering effort on a custom Rust/C userspace, the Virtualized Object Shell (VOS), and a cohesive, macOS-inspired interface planned for future desktop releases.
+- **Open-Core Model Without Enterprise Lock-In:** The Community Edition of MacroMag OS is—and will always remain—100% free and open-source (GPL v3). To sustain long-term development, an optional, affordable **Enterprise Edition** is planned on top of the open core, specifically priced to be accessible for small and medium-sized IT businesses priced out by traditional enterprise Linux vendors.
+
 
 # MacroMag OS — Linux Distribution System Creating Context
 *Snapshot of architecture, completed milestones, and remaining roadmap for people continuity.*
@@ -113,7 +117,6 @@ MacroMag replaces traditional raw-text shells with an object-oriented execution 
 ### 3. Long-Term R&D: Magnetic Modularity & Phantom BIOS
 Our long-term hardware vision aims to eliminate single-point-of-failure motherboards and fight e-waste:
 * **Decentralized Phantom BIOS:** Each physical hardware module carries its own minimal firmware descriptor, registering its capabilities dynamically upon connection.
-* **Hot-Swappable Hardware Nodes:** Researching fault-tolerant, magnetic/pogo-pin interconnects for deterministic real-time module replacement without system crashes.
 
 ### 4. MUR (MacroMag User Repository) 
 Inspired Arch User Repository, Tools build in system connecting with VOS simple commands, connected with system. 
@@ -124,13 +127,16 @@ We want to be the most powerful But simple linux Distribution with good GUI and 
 
 ## 🤝 Project Leadership & Team
 
-* **Adrian Morawski (@adrianmorawski713)** — **Founder & CEO** (Project Creator, Lead Architet & Vision)
+* **Adrian Morawski (@adrianmorawski713)** — **Founder** (Project Creator, Lead Architet & Vision)
 * **Alan Morawski (@sxalanek)** — **Core Administrator** (Code, Legal Compliance & Security)
 * **Maldyrek (@maldyrek)** — **Core Administrator** (Operations & Community Management)
 
-## 💜 Support
-**We Need Your Support To: - Create Official Website (macromag.org) of project and paid for code evolution progress mode!**
-# if you want give us a donate, Go To opencollective Site **[Support](https://opencollective.com/macromag).** Page
+## 🩷 Support the Project
+
+MacroMag OS is an independent, community-driven open-source project built out of passion for clean, deterministic systems engineering. All core code is and will remain free under the GPL v3 license.
+
+If you find this architecture interesting or want to support infrastructure costs (such as the `macromag.org` domain, build servers, and test hardware), you can contribute via **[OpenCollective](https://opencollective.com/macromag)** or GitHub Sponsors. Every contribution goes directly toward maintaining and advancing the project.
+
 
 ---
 
@@ -171,13 +177,8 @@ MacroMag is an ambitious, founder-led open-source project initiated by Adrian Mo
 ## 🟡 Rule of MacroMag ™
 Online But Always Updating, We giving two versions of MacroMag OS: Free for people, paid for enterprises. 
 
-## ⚠️ Transparency & Security Notice (About `.exe` Files)
-
-If you notice pre-compiled `.exe` binaries in this repository or in our Releases, please note that **they are legitimate, open-source system utilities and prototypes** built for the upcoming **MacroMag-32** ecosystem (for testing and emulation purposes).
-
-* **100% Open Source:** Every binary comes directly from the source code available in this repository (licensed under **GNU GPL v3.0**). You do not have to trust our pre-built files—you can inspect the code and compile everything yourself from scratch.
-* **Zero Telemetry & Safe:** In accordance with the MacroMag Foundation core principles, none of our tools contain telemetry, tracking, or obfuscated scripts.
-* **Why `.exe`?** While our target architecture is a bare-metal RISC-V microkernel, early userspace apps, tools, and simulators are temporarily compiled for Windows to allow rapid testing and development.
+## ⏱️ Status
+**We Get A working system With MUR and VOS connect, Basic system tools, 64-bit Architecture without QEMU emulators, Rust & C Code, Completed Phase 3, Bootable (.iso) file, 20 Issues Completed.**
 
 If you have any questions about a specific file or want to verify a build, feel free to open an Issue or check the source directories!
 
