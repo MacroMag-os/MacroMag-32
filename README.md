@@ -158,9 +158,13 @@ visit Repository: **https://github.com/MacroMag-os/mur**
 ### 5. MacroMag As New Linux Distribution
 We want to be the most powerful But simple linux Distribution with good GUI and a lot of Functional useful system data
 
+## 🦊 GitLab Copy
+**(https://gitlab.com/maldyrek/macromag-32)**
+
 ## 🤝 Project Leadership & Team
 
-* **Adrian Morawski (@adrianmorawski713)** — **Founder** (Project Creator, Lead Architet & Vision)
+* **Adrian Morawski (@adrianmorawski713)data
+* **Founder** (Project Creator, Lead Architet & Vision)
 * **Alan Morawski (@sxalanek)** — **Core Administrator** (Code, Legal Compliance & Security)
 * **Maldyrek (@maldyrek)** — **Core Administrator** (Operations & Community Management)
 
