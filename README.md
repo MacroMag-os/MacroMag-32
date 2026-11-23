@@ -29,10 +29,43 @@ Modern computing is trapped in a cycle of planned obsolescence. Mainstream opera
 
 **MacroMag is an experimental Linux Distribution architecture designed for, modularity, and zero-telemetry online execution.** 
    
-### Pre-built Prototype (ISO & Binaries)
-Don't want to compile from source? Download pre-built prototype images (`MacroMag-x86_64.iso`) and test utilities directly from our **[GitHub Releases](https://github.com/MacroMag-os/MacroMag-32)** page.
+## Quick Start
 
-## 2. Pure Linux Kernel Core (`x86_64` & `RISC-V`)
+While **MacroMag OS** is engineered for real 64-bit (`x86_64`) hardware, you can easily test the bootable ISO in **VMware Workstation Player / Pro** before deploying to bare metal.
+
+### 1. Get the ISO
+Download the latest pre-built `MacroMag-x86_64.iso` from the **[GitHub Releases](https://github.com/MacroMag-os/MacroMag-32/releases)** page, or build it from source:
+
+```bash
+git clone https://github.com/MacroMag-os/MacroMag-32.git
+cd MacroMag-32
+chmod +x buildiso.sh
+./buildiso.sh
+```
+
+### 2. Configure the Virtual Machine in VMware
+1. Open VMware and click **Create a New Virtual Machine** -> **Typical (Recommended)**.
+2. Select **Installer disc image file (iso)** and browse to `MacroMag-x86_64.iso`.
+3. Choose **Linux** as the Guest Operating System and **Other Linux 6.x kernel 64-bit** (or *Other Linux 5.x kernel 64-bit*) as the Version.
+4. Allocate at least **512 MB – 1 GB of RAM** and **2 GB – 4 GB of disk space** (select *Store virtual disk as a single file*).
+5. **Important (Firmware & Disk):** Ensure the VM firmware is set to **Legacy BIOS** (default in VMware, until Issue #31 UEFI support is completed) and the virtual disk is attached as **SATA** or **IDE** (`/dev/sda`) so `sys.install()` detects it properly.
+
+### 3. Boot & Test VOS
+Power on the VM. The Linux kernel will boot directly into `/init` (**Virtualized Object Shell**). Try running:
+
+```text
+sys.cpu()
+disk.list()
+mur sync
+```
+
+To test bare-metal installation inside the VM disk, run:
+
+```text
+sys.install("/dev/sda")
+```
+
+## Pure Linux Kernel Core (`x86_64` & `RISC-V`)
 
 Instead of reinventing hardware drivers from scratch, MacroMag leverages a stripped-down, deterministic **Linux Kernel** purely as a hardware abstraction layer.
 
