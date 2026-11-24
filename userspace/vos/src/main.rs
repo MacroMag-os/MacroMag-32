@@ -5,6 +5,7 @@ mod vos_parser;
 
 use std::collections::BTreeSet;
 use std::env;
+use std::arch::asm;
 use std::ffi::CString;
 use std::fs;
 use std::io::{self, Write};
@@ -12,13 +13,11 @@ use std::process::{Command, Stdio};
 use vos_core::{VosObject, VosValue};
 use vos_parser::{tokenize, Parser};
 
-const SYS_MOUNT_X86_64: i64 = 165;
 const SIGINT: i32 = 2;
 const SIG_IGN: usize = 1;
 const WNOHANG: i32 = 1;
 
 extern "C" {
-    fn syscall(number: i64, ...) -> i64;
     fn signal(sig: i32, handler: usize) -> usize;
     fn waitpid(pid: i32, status: *mut i32, options: i32) -> i32;
 }
@@ -32,18 +31,24 @@ fn reap_zombie_processes() {
 
 fn mount_kernel_fs(source: &str, target: &str, fstype: &str) {
     let _ = fs::create_dir_all(target);
-    let src = CString::new(source).unwrap();
-    let tgt = CString::new(target).unwrap();
-    let fs_t = CString::new(fstype).unwrap();
+    let Ok(src) = CString::new(source) else { return; };
+    let Ok(tgt) = CString::new(target) else { return; };
+    let Ok(fs_t) = CString::new(fstype) else { return; };
 
     unsafe {
-        syscall(
-            SYS_MOUNT_X86_64,
-            src.as_ptr(),
-            tgt.as_ptr(),
-            fs_t.as_ptr(),
-            0u64,
-            std::ptr::null::<u8>(),
+        let _ret: isize;
+        asm!(
+            "syscall",
+            in("rax") 165usize,
+            in("rdi") src.as_ptr(),
+            in("rsi") tgt.as_ptr(),
+            in("rdx") fs_t.as_ptr(),
+            in("r10") 0usize,
+            in("r8") 0usize,
+            lateout("rax") _ret,
+            out("rcx") _,
+            out("r11") _,
+            options(nostack)
         );
     }
 }
@@ -118,7 +123,7 @@ fn main() {
         let display_cwd = if cwd == "/root" { "~".to_string() } else { cwd };
 
         print!("\x1B[1;32mroot@macromag\x1B[0m:\x1B[1;34m{}\x1B[0m# ", display_cwd);
-        io::stdout().flush().unwrap();
+        let _ = io::stdout().flush();
 
         let mut input = String::new();
         if io::stdin().read_line(&mut input).is_err() {
