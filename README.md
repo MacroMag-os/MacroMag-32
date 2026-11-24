@@ -241,7 +241,7 @@ Security in VOS is not an afterthought—it is embedded directly into the shell 
 
 ## 🤝 Project Leadership & Team
 
-* **Adrian Morawski (@adrianmorawski713)data
+* **Adrian Morawski (@adrianmorawski713) -**
 * **Founder** (Project Creator, Lead Architet & Vision)
 * **Alan Morawski (@sxalanek)** — **Core Administrator** (Code, Legal Compliance & Security)
 * **Maldyrek (@maldyrek)** — **Core Administrator** (Operations & Community Management)
