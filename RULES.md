@@ -3,7 +3,7 @@
 **1. If you creating a Issues, include this:**
 
 - Create a note and explain note (If your issue need instructions) 
-- Example: " I Want to tell about¹ this. " ¹ - Don't reopen issue, create new
+`Example: " I Want to tell about¹ this. " ¹ - Don't reopen issue, create new`
 - If it helps, link a screenshot/Pictures of problem
 - Tell about the problem, clean without any needless information
 
