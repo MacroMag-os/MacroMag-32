@@ -42,3 +42,9 @@ jobs:
             MacroMag-x86_64.iso
           generate_release_notes: true
 
+
+      - name: Upload ISO Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MacroMag-x86_64-ISO
+          path: MacroMag-x86_64.iso
