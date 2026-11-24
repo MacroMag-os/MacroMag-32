@@ -237,7 +237,7 @@ Security in VOS is not an afterthought—it is embedded directly into the shell 
 
 
 ## 🦊 GitLab Copy
-[GitLab]**(https://gitlab.com/maldyrek/macro-mag-32)**
+[GitLab](https://gitlab.com/maldyrek/macro-mag-32)
 
 ## 🤝 Project Leadership & Team
 
