@@ -28,7 +28,7 @@ extern "C" {
         data: *const core::ffi::c_void,
     ) -> i32;
     fn setsid() -> i32;
-    fn open(pathname: *const i8, flags: i32) -> i32;
+    fn open(pathname: *const i8, flags: i32, ...) -> i32;
     fn dup2(oldfd: i32, newfd: i32) -> i32;
     fn close(fd: i32) -> i32;
 }
