@@ -1,7 +1,7 @@
  # MacroMag OS: Modular Linux Distribution New Architecture by Adrian Morawski
 
 <p align="center">
-  <img src="banner.gif" alt="MacroMag OS Demo" width="100%">
+  <img src="screenshot.png" alt="MacroMag OS Demo" width="100%">
 </p>
 
 
