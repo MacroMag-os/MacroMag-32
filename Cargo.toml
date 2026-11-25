@@ -5,10 +5,8 @@ members = [
     "userspace/mur",
 ]
 
-# Wspólna optymalizacja rozmiaru dla obu binarek w trybie release
 [profile.release]
-opt-level = "z"
-lto = true
-codegen-units = 1
+opt-level = 2
+lto = false
 panic = "abort"
 strip = true
