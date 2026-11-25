@@ -58,7 +58,7 @@ cat << 'GRUBEOF' > "$ISO_DIR/boot/grub/grub.cfg"
 set default=0
 set timeout=3
 menuentry "MacroMag OS (Full Server Edition x86_64)" {
-    linux /boot/vmlinuz console=tty0 console=ttyS0 rw
+    linux /boot/vmlinuz console=ttyS0 console=tty0 rw
     initrd /boot/initramfs.img
 }
 GRUBEOF

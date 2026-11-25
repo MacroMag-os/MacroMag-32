@@ -147,8 +147,12 @@ fn main() {
         let _ = io::stdout().flush();
 
         let mut input = String::new();
-        if io::stdin().read_line(&mut input).is_err() {
-            continue;
+        match io::stdin().read_line(&mut input) {
+            Ok(0) | Err(_) => {
+                std::thread::sleep(std::time::Duration::from_millis(100));
+                continue;
+            }
+            Ok(_) => {}
         }
 
         let trimmed = input.trim();
