@@ -10,14 +10,17 @@ rm -rf "$ROOTFS" "$ISO_DIR"
 mkdir -p "$ROOTFS" "$ISO_DIR/boot/grub"
 
 echo "=== [2/7] Pobieranie bazy musl + dynamicznego linkera (Alpine minirootfs) ==="
-wget -q "https://alpinelinux.org" -O /tmp/alpine.tar.gz
+ALPINE_REL="https://dl-cdn.alpinelinux.org/alpine/latest-stable/releases/x86_64"
+ROOTFS_TAR=$(wget -qO- "$ALPINE_REL/" | grep -oE 'alpine-minirootfs-[0-9]+\.[0-9]+\.[0-9]+-x86_64\.tar\.gz' | head -n 1)
+echo "Pobieranie: $ROOTFS_TAR"
+wget -q "$ALPINE_REL/$ROOTFS_TAR" -O /tmp/alpine.tar.gz
 tar -xzf /tmp/alpine.tar.gz -C "$ROOTFS"
 rm -f /tmp/alpine.tar.gz
 
 echo "=== [3/7] Instalacja statycznego curl (HTTPS) i certyfikatow SSL dla MUR ==="
 mkdir -p "$ROOTFS/etc/ssl/certs" "$ROOTFS/usr/bin"
-wget -q "https://curl.se" -O "$ROOTFS/etc/ssl/certs/ca-certificates.crt"
-wget -q "https://github.com" -O "$ROOTFS/usr/bin/curl"
+wget -q "https://curl.se/ca/cacert.pem" -O "$ROOTFS/etc/ssl/certs/ca-certificates.crt"
+wget -q "https://github.com/moparisthebest/static-curl/releases/latest/download/curl-amd64" -O "$ROOTFS/usr/bin/curl"
 chmod +x "$ROOTFS/usr/bin/curl"
 
 echo "=== [4/7] Wypakowanie niezbednych modulow jadra Linux LTS (modloop-lts) ==="
@@ -31,7 +34,7 @@ cp -r /tmp/modloop/modules "$ROOTFS/lib/"
 rm -rf /tmp/modloop
 
 echo "=== [5/7] Pobieranie lekkiego firmware sieciowego z Alpine ==="
-ALPINE_MAIN="https://alpinelinux.org"
+ALPINE_MAIN="https://dl-cdn.alpinelinux.org/alpine/latest-stable/main/x86_64"
 for pkg in linux-firmware-rtl_nic linux-firmware-rtlwifi linux-firmware-iwlwifi; do
     PKG_FILE=$(wget -qO- "$ALPINE_MAIN/" | grep -oE "${pkg}-[0-9][^\"]*\.apk" | head -n 1)
     if [ -n "$PKG_FILE" ]; then
