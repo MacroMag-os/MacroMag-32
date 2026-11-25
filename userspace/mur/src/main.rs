@@ -31,7 +31,7 @@ fn parse_manifest(pkg_name: &str) -> Option<PkgManifest> {
     Some(PkgManifest {
         name: map.get("name").cloned().unwrap_or_else(|| pkg_name.to_string()),
         version: map.get("version").cloned().unwrap_or_else(|| "unknown".to_string()),
-        description: map.get("description").cloned().unwrap_or_else(|| "Brak opisu".to_string()),
+        description: map.get("description").cloned().unwrap_or_else(|| "Missing opisu".to_string()),
         url: map.get("url").cloned().unwrap_or_default(),
         bin: map.get("bin").cloned().unwrap_or_else(|| pkg_name.to_string()),
         sha256: map.get("sha256").cloned().unwrap_or_default(),
@@ -62,7 +62,7 @@ fn main() {
 }
 
 fn print_help() {
-    println!("MUR (MacroMag User Repository) v0.3.0\nUzycie: mur sync | list | info <pkg> | install <pkg> | remove <pkg>");
+    println!("MUR (MacroMag User Repository) v0.3.0\nUsage: mur sync | list | info <pkg> | install <pkg> | remove <pkg>");
 }
 
 fn sync_repository() {
@@ -101,7 +101,7 @@ fn info_package(pkg_name: &str) {
 }
 
 fn install_package(pkg_name: &str) {
-    let Some(m) = parse_manifest(pkg_name) else { eprintln!("[MUR Error]: Pakiet {} nie istnieje.", pkg_name); return; };
+    let Some(m) = parse_manifest(pkg_name) else { eprintln!("[MUR Error]: Package '{}' does not exist.", pkg_name); return; };
     let _ = fs::create_dir_all(SYSTEM_BIN_DIR);
     let dst_bin = format!("{}/{}", SYSTEM_BIN_DIR, m.bin);
     println!("[MUR] Downloading {} v{}...", m.name, m.version);
@@ -160,7 +160,7 @@ fn sys_check() {
                 println!("\x1B[1;32m[OK]\x1B[0m Masz najnowsza wersje systemu!");
             }
         }
-        None => eprintln!("[MUR Error]: Nie udalo sie polaczyc z GitHub Releases API."),
+        None => eprintln!("[MUR Error]: Failed to polaczyc z GitHub Releases API."),
     }
 }
 
@@ -183,6 +183,6 @@ fn sys_upgrade() {
         let _ = fs::write(VERSION_FILE, format!("{}\n", latest));
         println!("\x1B[1;32m[SUKCES]\x1B[0m Zaktualizowano system do {}! Wpisz sys.reboot().", latest);
     } else {
-        eprintln!("[MUR Error]: Nie udalo sie pobrac plikow aktualizacji.");
+        eprintln!("[MUR Error]: Failed to pobrac plikow aktualizacji.");
     }
 }

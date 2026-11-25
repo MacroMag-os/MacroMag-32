@@ -73,7 +73,7 @@ pub fn execute_builtin(module: &str, action: &str, args: &[VosValue]) -> Result<
             };
             fs_cat(path)
         }
-        _ => Err(format!("Nieznana komenda systemowa: {}.{}()", module, action)),
+        _ => Err(format!("Unknown komenda systemowa: {}.{}()", module, action)),
     }
 }
 

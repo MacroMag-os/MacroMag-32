@@ -37,22 +37,22 @@ pub fn execute_builtin(module: &str, action: &str, args: &[VosValue]) -> Result<
         ("mur", "sync") => run_external("/usr/bin/mur", &["sync"]),
         ("mur", "list") => run_external("/usr/bin/mur", &["list"]),
         ("mur", "install") => { let Some(VosValue::Text(p)) = args.first() else { return Err("Podaj pakiet".into()); }; run_external("/usr/bin/mur", &["install", p.as_str()]) }
-        _ => Err(format!("Nieznana komenda: {}.{}()", module, action)),
+        _ => Err(format!("Unknown komenda: {}.{}()", module, action)),
     }
 }
 fn sys_install(disk: &str) -> Result<Vec<VosObject>, String> {
-    if !disk.starts_with("/dev/") || fs::metadata(disk).is_err() { return Err(format!("Brak dysku {}", disk)); }
+    if !disk.starts_with("/dev/") || fs::metadata(disk).is_err() { return Err(format!("Missing dysku {}", disk)); }
     println!("[INSTALLER] Partycjonowanie {}...", disk);
-    let mut fd = Command::new("/bin/fdisk").arg(disk).stdin(Stdio::piped()).stdout(Stdio::null()).spawn().map_err(|_| "Brak fdisk".to_string())?;
+    let mut fd = Command::new("/bin/fdisk").arg(disk).stdin(Stdio::piped()).stdout(Stdio::null()).spawn().map_err(|_| "Missing fdisk".to_string())?;
     if let Some(mut s) = fd.stdin.take() { let _ = s.write_all(b"o\nn\np\n1\n\n\na\nw\n"); }
-    if !fd.wait().map(|s| s.success()).unwrap_or(false) { return Err("Blad fdisk".into()); }
+    if !fd.wait().map(|s| s.success()).unwrap_or(false) { return Err("Error fdisk".into()); }
     let part = if disk.contains("nvme") || disk.contains("mmcblk") { format!("{}p1", disk) } else { format!("{}1", disk) };
     std::thread::sleep(std::time::Duration::from_secs(1));
     if !Command::new("mkfs.ext4").args(["-F", "-L", "MACROMAG_ROOT", &part]).status().map(|s| s.success()).unwrap_or(false) {
-        if !Command::new("/bin/mkfs.ext2").args(["-F", "-L", "MACROMAG_ROOT", &part]).status().map(|s| s.success()).unwrap_or(false) { return Err("Blad mkfs".into()); }
+        if !Command::new("/bin/mkfs.ext2").args(["-F", "-L", "MACROMAG_ROOT", &part]).status().map(|s| s.success()).unwrap_or(false) { return Err("Error mkfs".into()); }
     }
     let _ = fs::create_dir_all("/mnt/target");
-    if !Command::new("/bin/mount").args([&part, "/mnt/target"]).status().map(|s| s.success()).unwrap_or(false) { return Err("Blad mount".into()); }
+    if !Command::new("/bin/mount").args([&part, "/mnt/target"]).status().map(|s| s.success()).unwrap_or(false) { return Err("Error mount".into()); }
     for d in ["boot/grub", "bin", "sbin", "usr/bin", "usr/sbin", "etc", "root", "var/cache/mur", "proc", "sys", "dev", "dev/pts", "tmp"] { let _ = fs::create_dir_all(format!("/mnt/target/{}", d)); }
     let _ = fs::copy("/init", "/mnt/target/init");
     for d in ["bin", "sbin", "usr", "etc"] { let _ = Command::new("/bin/cp").args(["-a", &format!("/{}/.", d), &format!("/mnt/target/{}/", d)]).status(); }
@@ -125,7 +125,7 @@ fn fs_cat(path: &str) -> Result<Vec<VosObject>, String> {
     Ok(c.lines().enumerate().map(|(i, l)| { let mut o = HashMap::new(); o.insert("line".into(), VosValue::Int((i+1) as i64)); o.insert("text".into(), VosValue::Text(l.to_string())); o }).collect())
 }
 fn run_external(prog: &str, args: &[&str]) -> Result<Vec<VosObject>, String> {
-    let out = Command::new(prog).args(args).output().map_err(|e| format!("Blad {}: {}", prog, e))?;
+    let out = Command::new(prog).args(args).output().map_err(|e| format!("Error {}: {}", prog, e))?;
     if !out.status.success() { return Err(String::from_utf8_lossy(&out.stderr).trim().to_string()); }
     Ok(String::from_utf8_lossy(&out.stdout).lines().enumerate().map(|(i, l)| { let mut o = HashMap::new(); o.insert("line".into(), VosValue::Int((i+1) as i64)); o.insert("output".into(), VosValue::Text(l.to_string())); o }).collect())
 }

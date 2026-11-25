@@ -54,7 +54,7 @@ pub fn tokenize(input: &str) -> Result<Vec<Token>, String> {
             '!' => {
                 chars.next();
                 if chars.peek() == Some(&'=') { chars.next(); tokens.push(Token::Neq); }
-                else { return Err("Nieznany operator '!'".into()); }
+                else { return Err("Unknown operator '!'".into()); }
             }
             '>' => {
                 chars.next();
@@ -94,7 +94,7 @@ pub fn tokenize(input: &str) -> Result<Vec<Token>, String> {
                         "KB" => 1024,
                         "MB" => 1024 * 1024,
                         "GB" => 1024 * 1024 * 1024,
-                        _ => return Err(format!("Nieznana jednostka: {}", unit)),
+                        _ => return Err(format!("Unknown jednostka: {}", unit)),
                     };
                     tokens.push(Token::BytesLit((num as u64) * mult));
                 }
@@ -153,13 +153,13 @@ impl Parser {
         self.expect(Token::LParen)?;
         let mut config = SandboxConfig { allow_net: false, read_only_fs: true };
         while self.peek() != &Token::RParen {
-            let key = match self.next() { Token::Ident(s) => s, o => return Err(format!("Blad: {:?}", o)) };
+            let key = match self.next() { Token::Ident(s) => s, o => return Err(format!("Parse error: {:?}", o)) };
             self.expect(Token::Colon)?;
-            let val = match self.next() { Token::BoolLit(b) => b, o => return Err(format!("Blad: {:?}", o)) };
+            let val = match self.next() { Token::BoolLit(b) => b, o => return Err(format!("Parse error: {:?}", o)) };
             match key.as_str() {
                 "net" => config.allow_net = val,
                 "ro_fs" => config.read_only_fs = val,
-                _ => return Err(format!("Nieznana opcja: {}", key)),
+                _ => return Err(format!("Unknown opcja: {}", key)),
             }
             if self.peek() == &Token::Comma { self.next(); }
         }
@@ -169,9 +169,9 @@ impl Parser {
     }
 
     fn parse_command(&mut self) -> Result<VosCommand, String> {
-        let module = match self.next() { Token::Ident(s) => s, o => return Err(format!("Blad: {:?}", o)) };
+        let module = match self.next() { Token::Ident(s) => s, o => return Err(format!("Parse error: {:?}", o)) };
         self.expect(Token::Dot)?;
-        let action = match self.next() { Token::Ident(s) => s, o => return Err(format!("Blad: {:?}", o)) };
+        let action = match self.next() { Token::Ident(s) => s, o => return Err(format!("Parse error: {:?}", o)) };
         self.expect(Token::LParen)?;
         let mut args = Vec::new();
         while self.peek() != &Token::RParen {
@@ -188,16 +188,16 @@ impl Parser {
             Token::Select => {
                 let mut fields = Vec::new();
                 loop {
-                    match self.next() { Token::Ident(s) => fields.push(s), o => return Err(format!("Blad: {:?}", o)) }
+                    match self.next() { Token::Ident(s) => fields.push(s), o => return Err(format!("Parse error: {:?}", o)) }
                     if self.peek() == &Token::Comma { self.next(); } else { break; }
                 }
                 Ok(VosTransform::Select(fields))
             }
             Token::Limit => match self.next() {
                 Token::IntLit(n) if n >= 0 => Ok(VosTransform::Limit(n as usize)),
-                o => Err(format!("Blad limit: {:?}", o)),
+                o => Err(format!("Limit error: {:?}", o)),
             },
-            o => Err(format!("Nieznana transformacja: {:?}", o)),
+            o => Err(format!("Unknown transformacja: {:?}", o)),
         }
     }
 
@@ -220,12 +220,12 @@ impl Parser {
     }
 
     fn parse_condition(&mut self) -> Result<FilterExpr, String> {
-        let field = match self.next() { Token::Ident(s) => s, o => return Err(format!("Blad: {:?}", o)) };
+        let field = match self.next() { Token::Ident(s) => s, o => return Err(format!("Parse error: {:?}", o)) };
         let op = match self.next() {
             Token::Eq => CompareOp::Eq, Token::Neq => CompareOp::Neq,
             Token::Gt => CompareOp::Gt, Token::Lt => CompareOp::Lt,
             Token::Gte => CompareOp::Gte, Token::Lte => CompareOp::Lte,
-            o => return Err(format!("Blad op: {:?}", o)),
+            o => return Err(format!("Operator error: {:?}", o)),
         };
         Ok(FilterExpr::Condition { field, op, value: self.parse_value()? })
     }

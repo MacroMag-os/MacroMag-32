@@ -71,7 +71,7 @@ pub fn tokenize(input: &str) -> Result<Vec<Token>, String> {
                     chars.next();
                     tokens.push(Token::Neq);
                 } else {
-                    return Err("Nieznany operator '!'".into());
+                    return Err("Unknown operator '!'".into());
                 }
             }
             '>' => {
@@ -136,7 +136,7 @@ pub fn tokenize(input: &str) -> Result<Vec<Token>, String> {
                         "KB" => 1024,
                         "MB" => 1024 * 1024,
                         "GB" => 1024 * 1024 * 1024,
-                        _ => return Err(format!("Nieznana jednostka: {}", unit)),
+                        _ => return Err(format!("Unknown jednostka: {}", unit)),
                     };
                     tokens.push(Token::BytesLit((num as u64) * multiplier));
                 }
@@ -247,7 +247,7 @@ impl Parser {
             match key.as_str() {
                 "net" => config.allow_net = val,
                 "ro_fs" => config.read_only_fs = val,
-                _ => return Err(format!("Nieznana opcja sandboxa: {}", key)),
+                _ => return Err(format!("Unknown opcja sandboxa: {}", key)),
             }
 
             if self.peek() == &Token::Comma {
@@ -298,7 +298,7 @@ impl Parser {
                     Token::Lt => CompareOp::Lt,
                     Token::Gte => CompareOp::Gte,
                     Token::Lte => CompareOp::Lte,
-                    other => return Err(format!("Nieznany operator porównania: {:?}", other)),
+                    other => return Err(format!("Unknown operator porównania: {:?}", other)),
                 };
                 let value = self.parse_value()?;
                 Ok(VosTransform::Where { field, op, value })
@@ -322,7 +322,7 @@ Token::Limit => match self.next() {
 Token::IntLit(n) if n >= 0 => Ok(VosTransform::Limit(n as usize)),
 other => Err(format!("'limit' wymaga dodatniej liczby całkowitej, jest {:?}", other)),
 },
-other => Err(format!("Nieznana transformacja w potoku: {:?}", other)),other => Err(format!("Nieznana transformacja w potoku: {:?}", other)),
+other => Err(format!("Unknown transformacja w potoku: {:?}", other)),other => Err(format!("Unknown transformacja w potoku: {:?}", other)),
 }
 }
 fn parse_value(&mut self) -> Result<VosValue, String> {
@@ -397,7 +397,7 @@ pub enum Token {
             Token::Lt => CompareOp::Lt,
             Token::Gte => CompareOp::Gte,
             Token::Lte => CompareOp::Lte,
-            other => return Err(format!("Nieznany operator porównania: {:?}", other)),
+            other => return Err(format!("Unknown operator porównania: {:?}", other)),
         };
         let value = self.parse_value()?;
         Ok(crate::vos_core::FilterExpr::Condition { field, op, value })
