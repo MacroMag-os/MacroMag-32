@@ -5,7 +5,6 @@ mod vos_parser;
 
 use std::collections::BTreeSet;
 use std::env;
-use std::arch::asm;
 use std::ffi::CString;
 use std::fs;
 use std::io::{self, Write};
@@ -16,10 +15,38 @@ use vos_parser::{tokenize, Parser};
 const SIGINT: i32 = 2;
 const SIG_IGN: usize = 1;
 const WNOHANG: i32 = 1;
+const O_RDWR: i32 = 2;
 
 extern "C" {
     fn signal(sig: i32, handler: usize) -> usize;
     fn waitpid(pid: i32, status: *mut i32, options: i32) -> i32;
+    fn mount(
+        source: *const i8,
+        target: *const i8,
+        filesystemtype: *const i8,
+        mountflags: usize,
+        data: *const core::ffi::c_void,
+    ) -> i32;
+    fn setsid() -> i32;
+    fn open(pathname: *const i8, flags: i32) -> i32;
+    fn dup2(oldfd: i32, newfd: i32) -> i32;
+    fn close(fd: i32) -> i32;
+}
+
+fn attach_console() {
+    let Ok(console) = CString::new("/dev/console") else { return; };
+    unsafe {
+        setsid();
+        let fd = open(console.as_ptr(), O_RDWR);
+        if fd >= 0 {
+            dup2(fd, 0);
+            dup2(fd, 1);
+            dup2(fd, 2);
+            if fd > 2 {
+                close(fd);
+            }
+        }
+    }
 }
 
 fn reap_zombie_processes() {
@@ -36,19 +63,12 @@ fn mount_kernel_fs(source: &str, target: &str, fstype: &str) {
     let Ok(fs_t) = CString::new(fstype) else { return; };
 
     unsafe {
-        let _ret: isize;
-        asm!(
-            "syscall",
-            in("rax") 165usize,
-            in("rdi") src.as_ptr(),
-            in("rsi") tgt.as_ptr(),
-            in("rdx") fs_t.as_ptr(),
-            in("r10") 0usize,
-            in("r8") 0usize,
-            lateout("rax") _ret,
-            out("rcx") _,
-            out("r11") _,
-            options(nostack)
+        mount(
+            src.as_ptr(),
+            tgt.as_ptr(),
+            fs_t.as_ptr(),
+            0,
+            std::ptr::null(),
         );
     }
 }
@@ -61,6 +81,7 @@ fn init_system_environment() {
 
     // 2. Montujemy wirtualne systemy plikow jadra (w tym /dev/pts dla SSH i terminali)
     mount_kernel_fs("devtmpfs", "/dev", "devtmpfs");
+    attach_console();
     mount_kernel_fs("devpts", "/dev/pts", "devpts");
     mount_kernel_fs("proc", "/proc", "proc");
     mount_kernel_fs("sysfs", "/sys", "sysfs");
