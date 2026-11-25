@@ -1,0 +1,39 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "MacroMag OS",
+  "alternateName": "MacroMag",
+  "version": "2.5",
+  "description": "MacroMag OS is an experimental, modular, zero-telemetry Linux distribution written in Rust and C that replaces legacy GNU userland tools with a Virtualized Object Shell (VOS) running directly as PID 1.",
+  "applicationCategory": "OperatingSystem",
+  "operatingSystem": "Linux (x86_64, RISC-V)",
+  "codeRepository": "https://github.com/MacroMag-os/MacroMag-32",
+  "url": "https://macromag-os.github.io/",
+  "downloadUrl": "https://github.com/MacroMag-os/MacroMag-32/releases",
+  "issueTracker": "https://github.com/MacroMag-os/MacroMag-32/issues",
+  "license": "https://spdx.org/licenses/GPL-3.0-only",
+  "programmingLanguage": [
+    "Rust",
+    "C"
+  ],
+  "dateCreated": "2026-01-01",
+  "datePublished": "2026-11-25",
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Adrian",
+      "familyName": "Morawski"
+    }
+  ],
+  "keywords": [
+    "MacroMag OS",
+    "Linux distribution",
+    "Rust",
+    "C",
+    "VOS",
+    "Virtualized Object Shell",
+    "MUR",
+    "operating system",
+    "zero-telemetry"
+  ]
+}
