@@ -66,7 +66,7 @@ fn print_help() {
 }
 
 fn sync_repository() {
-    println!("[MUR] Pobieranie bazy pakietow z GitHuba...");
+    println!("[MUR] Downloading bazy pakietow z GitHuba...");
     let _ = fs::create_dir_all(MUR_CACHE_DIR);
     let archive_path = "/tmp/mur-main.tar.gz";
     if !download_file(MUR_ARCHIVE_URL, archive_path) {
@@ -104,8 +104,8 @@ fn install_package(pkg_name: &str) {
     let Some(m) = parse_manifest(pkg_name) else { eprintln!("[MUR Error]: Pakiet {} nie istnieje.", pkg_name); return; };
     let _ = fs::create_dir_all(SYSTEM_BIN_DIR);
     let dst_bin = format!("{}/{}", SYSTEM_BIN_DIR, m.bin);
-    println!("[MUR] Pobieranie {} v{}...", m.name, m.version);
-    if !download_file(&m.url, &dst_bin) { eprintln!("[MUR Error]: Pobieranie nie powiodlo sie."); return; }
+    println!("[MUR] Downloading {} v{}...", m.name, m.version);
+    if !download_file(&m.url, &dst_bin) { eprintln!("[MUR Error]: Downloading nie powiodlo sie."); return; }
     if !m.sha256.is_empty() {
         if let Ok(out) = Command::new("/bin/sha256sum").arg(&dst_bin).output() {
             let actual = String::from_utf8_lossy(&out.stdout).split_whitespace().next().unwrap_or("").to_string();
@@ -113,7 +113,7 @@ fn install_package(pkg_name: &str) {
         }
     }
     if let Ok(meta) = fs::metadata(&dst_bin) { let mut p = meta.permissions(); p.set_mode(0o755); let _ = fs::set_permissions(&dst_bin, p); }
-    println!("[MUR] Zainstalowano {} w {}!", m.name, dst_bin);
+    println!("[MUR] Installed {} w {}!", m.name, dst_bin);
 }
 
 fn remove_package(pkg_name: &str) {

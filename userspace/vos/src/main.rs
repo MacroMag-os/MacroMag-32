@@ -133,7 +133,7 @@ fn main() {
     print!("\x1B[2J\x1B[1;1H");
     println!("\x1B[1;36mMacroMag OS 0.1 LTS (x86_64) tty1\x1B[0m");
     println!("Kernel: Linux | Runtime: VOS + POSIX Userspace | Zero Telemetry\n");
-    println!("Wpisz komende Linuxa (np. ls, dmesg | grep usb, mur) lub potok VOS (np. sys.ps()).\n");
+    println!("Enter a Linux command (e.g. ls, dmesg | grep usb, mur) or a VOS object pipeline (e.g. sys.ps()).\n");
 
     loop {
         reap_zombie_processes();
@@ -174,9 +174,9 @@ fn main() {
             continue;
         }
         if trimmed == "help" {
-            println!("Srodowisko MacroMag OS obsluguje dwa tryby pracy:");
-            println!("  1. Standardowe komendy Linuxa: ls, cd, cat, dmesg | grep ..., mur");
-            println!("  2. Potoki obiektowe VOS:      sys.ps() | where memory > 10MB | select pid, name");
+            println!("MacroMag OS supports two execution modes:");
+            println!("  1. Standard Linux commands: ls, cd, cat, dmesg | grep ..., mur");
+            println!("  2. VOS object pipelines:      sys.ps() | where memory > 10MB | select pid, name");
             println!("  3. Zarzadzanie systemem:      sys.install(\"/dev/sda\"), sys.reboot(), sys.poweroff()");
             continue;
         }
@@ -203,10 +203,10 @@ fn main() {
                                 Err(e) => println!("\x1B[1;31m[VOS Error]:\x1B[0m {}", e),
                             }
                         }
-                        Err(e) => println!("\x1B[1;31m[Blad skladni VOS]:\x1B[0m {}", e),
+                        Err(e) => println!("\x1B[1;31m[VOS Syntax Error]:\x1B[0m {}", e),
                     }
                 }
-                Err(e) => println!("\x1B[1;31m[Blad leksera]:\x1B[0m {}", e),
+                Err(e) => println!("\x1B[1;31m[VOS Lexer Error]:\x1B[0m {}", e),
             }
         } else if trimmed.contains('|') || trimmed.contains('>') || trimmed.contains('<') || trimmed.ends_with('&') || trimmed.contains(';') {
             // Klasyczne potoki uniksowe, przekierowania i zadania w tle delegujemy do /bin/sh
