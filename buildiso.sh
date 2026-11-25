@@ -2,7 +2,8 @@
 set -e
 
 echo "=== [1/7] Kompilacja Rust workspace (VOS + MUR) ==="
-RUSTFLAGS="-C relocation-model=static -C target-cpu=x86-64" cargo build --release --target x86_64-unknown-linux-musl
+RUSTFLAGS="-C target-cpu=x86-64 -C target-feature=+crt-static" cargo build --release --target x86_64-unknown-linux-musl
+
 
 ROOTFS="build_rootfs"
 ISO_DIR="build_iso"
