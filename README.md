@@ -40,6 +40,10 @@ Modern computing is trapped in a cycle of planned obsolescence. Mainstream opera
 
 **MacroMag is an experimental Linux Distribution architecture designed for, modularity, and zero-telemetry online execution.** 
 
+## 💽 Versions
+# 📱 ARM64 (Mobile) 
+# 🖥 x86-64 (PC) 
+
 ## 🕰 Core Of MacroMag OS
 I have always been fascinated by operating systems — from old Nokia Series 40, through Windows and macOS, to Linux. Every time, I hit the same wall: closed systems or outdated tools from the 1980s that I couldn't truly shape myself. So I said: enough. Instead of living in someone else's world, I decided to build my own — a system that actually responds to me, written in Rust and C. This is MacroMag OS.
    
