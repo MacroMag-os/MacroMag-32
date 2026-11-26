@@ -51,7 +51,11 @@ jobs:
       - name: Install ARM64 cross-build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc-aarch64-linux-gnu grub-efi-arm64-bin xorriso mtools dosfstools wget cpio zip squashfs-tools
+          sudo apt-get install -y gcc-aarch64-linux-gnu grub-common xorriso mtools dosfstools wget cpio zip squashfs-tools
+          GRUB_DEB=$(wget -qO- "http://ports.ubuntu.com/pool/main/g/grub2/" | grep -oE 'grub-efi-arm64-bin_[^"]+arm64\.deb' | tail -n 1)
+          wget -q "http://ports.ubuntu.com/pool/main/g/grub2/$GRUB_DEB" -O /tmp/grub-arm64.deb
+          sudo dpkg-deb -x /tmp/grub-arm64.deb /
+          rm -f /tmp/grub-arm64.deb
 
       - uses: dtolnay/rust-toolchain@stable
         with:
