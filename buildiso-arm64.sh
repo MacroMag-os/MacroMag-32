@@ -21,8 +21,15 @@ rm -f /tmp/alpine-arm64.tar.gz
 echo "=== [3/7] Instalacja statycznego curl (HTTPS) i certyfikatow SSL dla MUR ==="
 mkdir -p "$ROOTFS/etc/ssl/certs" "$ROOTFS/usr/bin"
 wget -q "https://curl.se/ca/cacert.pem" -O "$ROOTFS/etc/ssl/certs/ca-certificates.crt"
-wget -q "https://github.com/moparisthebest/static-curl/releases/latest/download/curl-aarch64" -O "$ROOTFS/usr/bin/curl"
-chmod +x "$ROOTFS/usr/bin/curl"
+ALPINE_MAIN="https://dl-cdn.alpinelinux.org/alpine/v3.20/main/aarch64"
+for pkg in ca-certificates-bundle libgcc libssl3 libcrypto3 zlib nghttp2-libs brotli-libs zstd-libs libidn2 libunistring libpsl c-ares libcurl curl; do
+    PKG_FILE=$(wget -qO- "$ALPINE_MAIN/" | grep -oE "${pkg}-[0-9][^\"]*\.apk" | head -n 1)
+    if [ -n "$PKG_FILE" ]; then
+        wget -q "$ALPINE_MAIN/$PKG_FILE" -O "/tmp/$PKG_FILE"
+        tar -xzf "/tmp/$PKG_FILE" -C "$ROOTFS" --exclude=".PKGINFO" --exclude=".SIGN*" 2>/dev/null || true
+        rm -f "/tmp/$PKG_FILE"
+    fi
+done
 
 echo "=== [4/7] Wypakowanie niezbednych modulow jadra Linux LTS ARM64 (modloop-lts) ==="
 mkdir -p "$ROOTFS/lib"
