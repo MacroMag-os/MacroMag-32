@@ -21,14 +21,14 @@ extern "C" {
     fn signal(sig: i32, handler: usize) -> usize;
     fn waitpid(pid: i32, status: *mut i32, options: i32) -> i32;
     fn mount(
-        source: *const i8,
-        target: *const i8,
-        filesystemtype: *const i8,
+        source: *const std::ffi::c_char,
+        target: *const std::ffi::c_char,
+        filesystemtype: *const std::ffi::c_char,
         mountflags: usize,
         data: *const core::ffi::c_void,
     ) -> i32;
     fn setsid() -> i32;
-    fn open(pathname: *const i8, flags: i32, ...) -> i32;
+    fn open(pathname: *const std::ffi::c_char, flags: i32, ...) -> i32;
     fn dup2(oldfd: i32, newfd: i32) -> i32;
     fn close(fd: i32) -> i32;
 }
@@ -37,7 +37,7 @@ fn attach_console() {
     let Ok(console) = CString::new("/dev/console") else { return; };
     unsafe {
         setsid();
-        let fd = open(console.as_ptr(), O_RDWR);
+        let fd = open(console.as_ptr().cast(), O_RDWR);
         if fd >= 0 {
             dup2(fd, 0);
             dup2(fd, 1);
@@ -64,9 +64,9 @@ fn mount_kernel_fs(source: &str, target: &str, fstype: &str) {
 
     unsafe {
         mount(
-            src.as_ptr(),
-            tgt.as_ptr(),
-            fs_t.as_ptr(),
+            src.as_ptr().cast(),
+            tgt.as_ptr().cast(),
+            fs_t.as_ptr().cast(),
             0,
             std::ptr::null(),
         );
