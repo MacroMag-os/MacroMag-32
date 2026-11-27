@@ -60,6 +60,8 @@ I have always been fascinated by operating systems — from old Nokia Series 40,
 
 #### 1. Android (via Termux + QEMU)
 
+For Easy run download **macromag-android.apk** on this repo: **(https://github.com/Macromag-os/macromag-android)** 
+
 You can run MacroMag OS natively on an ARM64 Android smartphone without root access using **Termux** (install from F-Droid or GitHub; do not use the outdated Google Play version).
 
 1. **Grant storage access and install required packages:**
