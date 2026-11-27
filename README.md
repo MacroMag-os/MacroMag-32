@@ -58,7 +58,7 @@ I have always been fascinated by operating systems — from old Nokia Series 40,
 
 ---
 
-#### 1. Android (via Termux + QEMU)
+#### 1. Android (termux or apk)
 
 For Easy run download **macromag-android.apk** on this repo: **(https://github.com/Macromag-os/macromag-android)** 
 
