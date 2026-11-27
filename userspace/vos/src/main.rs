@@ -128,6 +128,10 @@ fn init_system_environment() {
 }
 
 fn main() {
+    let is_pid1 = std::process::id() == 1;
+    if !is_pid1 {
+        println!("MacroMag VOS: running in userspace/Android container mode (PID {})", std::process::id());
+    }
     init_system_environment();
 
     print!("\x1B[2J\x1B[1;1H");
