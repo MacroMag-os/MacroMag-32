@@ -49,6 +49,83 @@ I have always been fascinated by operating systems — from old Nokia Series 40,
    
 ## Quick Start
 
+### Running MacroMag OS on ARM64 (AArch64)
+
+> **Important Note on Booting (`invalid magic number` error):**
+> The current `MacroMag-aarch64.iso` release uses an EFI `zboot`-compressed Linux kernel alongside GNU GRUB 2.04. Because GRUB 2.04 does not natively support `zboot` kernel headers on ARM64, booting the ISO directly via UEFI/GRUB will fail with `error: invalid magic number`.
+> 
+> To boot the system, extract the kernel and initramfs from the ISO and pass them directly to QEMU.
+
+---
+
+#### 1. Android (via Termux + QEMU)
+
+You can run MacroMag OS natively on an ARM64 Android smartphone without root access using **Termux** (install from F-Droid or GitHub; do not use the outdated Google Play version).
+
+1. **Grant storage access and install required packages:**
+   ```bash
+   termux-setup-storage
+   pkg update && pkg upgrade -y
+   pkg install qemu-system-aarch64-headless 7zip -y
+   ```
+
+2. **Copy and extract the ISO image:**
+   ```bash
+   mkdir -p ~/macromag && cd ~/macromag
+   cp ~/storage/downloads/MacroMag-aarch64.iso .
+   7zz x MacroMag-aarch64.iso
+   ```
+
+3. **Boot MacroMag OS directly into the VOS shell:**
+   ```bash
+   qemu-system-aarch64 \
+     -M virt \
+     -cpu cortex-a57 \
+     -m 1024 \
+     -kernel boot/vmlinuz \
+     -initrd boot/initramfs.img \
+     -append "console=ttyAMA0" \
+     -nographic
+   ```
+   *(Optional: Add `-nic user,model=virtio-net-pci` to enable internet access for the `mur` package manager. To exit QEMU and return to Termux, press `Ctrl + A`, release, and press `X`.)*
+
+---
+
+#### 2. Linux ARM64 (Raspberry Pi 4/5, ARM Servers)
+
+On native ARM64 Linux hosts, you can enable **KVM** hardware acceleration for near-native performance:
+
+1. **Install QEMU and `p7zip`:**
+   ```bash
+   sudo apt update && sudo apt install qemu-system-arm p7zip-full -y
+   ```
+
+2. **Extract the ISO and boot with KVM:**
+   ```bash
+   mkdir -p ~/macromag && cd ~/macromag
+   7z x /path/to/MacroMag-aarch64.iso
+
+   qemu-system-aarch64 \
+     -M virt \
+     -cpu host \
+     -enable-kvm \
+     -m 1024 \
+     -kernel boot/vmlinuz \
+     -initrd boot/initramfs.img \
+     -append "console=ttyAMA0" \
+     -nographic
+   ```
+
+---
+
+#### 3. macOS (Apple Silicon M1–M4 via UTM)
+
+1. Extract `boot/vmlinuz` and `boot/initramfs.img` from `MacroMag-aarch64.iso` (e.g., using The Unarchiver or `7zz x MacroMag-aarch64.iso` in Terminal).
+2. Open **UTM** and click **Create a New Virtual Machine** → **Virtualize** → **Linux**.
+3. Check **Boot from kernel image**, then select the extracted `vmlinuz` as the **Linux Kernel** and `initramfs.img` as the **Linux Initial Ramdisk**.
+4. Set **Boot Arguments** to `console=ttyAMA0` (or leave default if using the graphical serial console) and allocate at least `1024 MB` of RAM.
+5. Save and start the virtual machine.
+
 While **MacroMag OS** is engineered for real 64-bit (`x86_64`) hardware, you can easily test the bootable ISO in **VMware Workstation Player / Pro** before deploying to bare metal.
 
 ### 1. Get the ISO
