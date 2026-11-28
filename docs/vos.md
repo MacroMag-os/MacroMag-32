@@ -9,8 +9,13 @@
 * **Memory Safety:** Leveraging Rust's ownership model ensures high stability and eliminates common memory-related vulnerabilities at the lowest level of userland.
 
 ## Basic Usage & Concepts
+VOS - Virtual Object Shell
 
-*(Note: Update this section with your exact VOS syntax examples as the shell evolves.)*
+## Syntax Example
+```vos
+// Query active processes consuming over 256 MB of RAM inside an isolated network sandbox
+sandbox(net: false) -> sys.ps() | where memory > 256MB && status == "running" | select pid, name, memory | limit 10
+```
 
 * **System Inspection:** Query active processes and hardware states directly as objects.
 * **Service Management:** Spawn and monitor background tasks directly from the PID 1 supervisor.
