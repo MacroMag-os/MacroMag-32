@@ -5,7 +5,7 @@
 </p>
 
 
-https://doi.org/10.5281/zenodo.24590073
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24590073.svg)](https://doi.org/10.5281/zenodo.24590073) 
 
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/16688/badge)](https://www.bestpractices.dev/projects/16688)
 
