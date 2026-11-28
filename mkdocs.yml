@@ -1,0 +1,15 @@
+site_name: MacroMag OS Documentation
+site_description: GNU-free Linux distribution written in Rust and C
+site_author: Adrian Morawski
+repo_url: https://github.com/Macromag-os/Macromag-32
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: indigo
+
+nav:
+  - Home: index.md
+  - VOS Shell (PID 1): vos.md
+  - MUR Package Manager: mur.md
